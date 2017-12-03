@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="其他," />
+  <meta name="keywords" content="android," />
 
 
 
@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="毕业前后，发生了很多事情。写博客这个习惯不知怎的也渐渐放下了。之前在CSDN和简书都有一些学习的总结，不过那时都还在上大学。写博客确实是一种很有用的学习方式，有些人可能会觉得是浪费时间，其实不然，能把一个东西讲清楚，必须先完全理解透，写的过程也就是在思考的过程，可以对某个疑难点再进行反复斟酌，可以对整体流程和内容再加深">
-<meta name="keywords" content="其他">
+<meta name="description" content="工作中经常需要用到一些adb命令，在此整理记录下来。 1、基本命令基本的就不用过多解释了。adb devices 查看已连接的设备adb -s \   指定连接设备adb root 获取root权限adb start-server/kill-server 启动/关闭adb服务adb connect \ 通过IP地址连接">
+<meta name="keywords" content="android">
 <meta property="og:type" content="article">
-<meta property="og:title" content="博客怎么写，我来立flag">
-<meta property="og:url" content="https://github.com/devnan/2017/11/15/博客怎么写/index.html">
+<meta property="og:title" content="Android常用命令之adb">
+<meta property="og:url" content="https://github.com/devnan/2017/12/03/Android常用命令之adb/index.html">
 <meta property="og:site_name" content="Developer Nan">
-<meta property="og:description" content="毕业前后，发生了很多事情。写博客这个习惯不知怎的也渐渐放下了。之前在CSDN和简书都有一些学习的总结，不过那时都还在上大学。写博客确实是一种很有用的学习方式，有些人可能会觉得是浪费时间，其实不然，能把一个东西讲清楚，必须先完全理解透，写的过程也就是在思考的过程，可以对某个疑难点再进行反复斟酌，可以对整体流程和内容再加深印象。再者，总结下来的博客可以方便以后查找，日积月累，这些内容输出会给你满满的收">
+<meta property="og:description" content="工作中经常需要用到一些adb命令，在此整理记录下来。 1、基本命令基本的就不用过多解释了。adb devices 查看已连接的设备adb -s \   指定连接设备adb root 获取root权限adb start-server/kill-server 启动/关闭adb服务adb connect \ 通过IP地址连接设备adb reboot 重启设备 2、应用管理adb shell pm lis">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-12-01T14:15:55.000Z">
+<meta property="og:updated_time" content="2017-12-03T15:04:29.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="博客怎么写，我来立flag">
-<meta name="twitter:description" content="毕业前后，发生了很多事情。写博客这个习惯不知怎的也渐渐放下了。之前在CSDN和简书都有一些学习的总结，不过那时都还在上大学。写博客确实是一种很有用的学习方式，有些人可能会觉得是浪费时间，其实不然，能把一个东西讲清楚，必须先完全理解透，写的过程也就是在思考的过程，可以对某个疑难点再进行反复斟酌，可以对整体流程和内容再加深印象。再者，总结下来的博客可以方便以后查找，日积月累，这些内容输出会给你满满的收">
+<meta name="twitter:title" content="Android常用命令之adb">
+<meta name="twitter:description" content="工作中经常需要用到一些adb命令，在此整理记录下来。 1、基本命令基本的就不用过多解释了。adb devices 查看已连接的设备adb -s \   指定连接设备adb root 获取root权限adb start-server/kill-server 启动/关闭adb服务adb connect \ 通过IP地址连接设备adb reboot 重启设备 2、应用管理adb shell pm lis">
 
 
 
@@ -120,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="https://github.com/devnan/2017/11/15/博客怎么写/"/>
+  <link rel="canonical" href="https://github.com/devnan/2017/12/03/Android常用命令之adb/"/>
 
 
 
 
 
-  <title>博客怎么写，我来立flag | Developer Nan</title>
+  <title>Android常用命令之adb | Developer Nan</title>
   
 
 
@@ -233,7 +233,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://github.com/devnan/2017/11/15/博客怎么写/">
+    <link itemprop="mainEntityOfPage" href="https://github.com/devnan/2017/12/03/Android常用命令之adb/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Devnan">
@@ -250,7 +250,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">博客怎么写，我来立flag</h1>
+          <h1 class="post-title" itemprop="name headline">Android常用命令之adb</h1>
         
 
         <div class="post-meta">
@@ -262,8 +262,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-15T20:33:28+08:00">
-                2017-11-15
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-03T23:01:32+08:00">
+                2017-12-03
               </time>
             
 
@@ -300,7 +300,38 @@
       
 
       
-        <p>毕业前后，发生了很多事情。写博客这个习惯不知怎的也渐渐放下了。之前在CSDN和简书都有一些学习的总结，不过那时都还在上大学。<br>写博客确实是一种很有用的学习方式，有些人可能会觉得是浪费时间，其实不然，能把一个东西讲清楚，必须先完全理解透，写的过程也就是在思考的过程，可以对某个疑难点再进行反复斟酌，可以对整体流程和内容再加深印象。再者，总结下来的博客可以方便以后查找，日积月累，这些内容输出会给你满满的收获感。<br>但是有些人可能觉得没东西输出，不知道怎么写。上学时候我写博客也是这种感觉，很多时候只是理论和概念的摘抄，却很少有自己的理解。其实，我觉得有两种办法解决这个问题。一是基于工作上遇到的问题，如果有自己更好的解决方法或者问题解决过程有学到新东西，都可以先记录到个人笔记，然后等有空的时候再把这些零碎的知识点整理写出来。二是可以找某一个专题点去学习和研究，比如内存优化等，通过网络或者书籍弄清楚这方面的内容，过程中肯定有自己的见解，及时记录后面再总结出来。<br>其实上面这些我随便说的==，都不重要，看自己个人学习方法吧。最最最重要的还是坚持。我也很难坚持做好一件事情，很多时候要强迫自己，很不舒服。但是我也清楚一件事，最安逸舒适的时候也就是在原地踏步的时候，前进总需要付出辛苦的汗水。感到困难就是因为遇到了难题或者在解决新问题，此时你正在进步，而熟练的问题是不会给你这种有压力的感觉的。<br>好吧，以后尽量每星期一篇，把学到的东西总结在这里，这样就慢慢积累起来了。最后就是少玩农药，多看书啦。</p>
+        <p>工作中经常需要用到一些adb命令，在此整理记录下来。</p>
+<h2 id="1、基本命令"><a href="#1、基本命令" class="headerlink" title="1、基本命令"></a>1、基本命令</h2><p>基本的就不用过多解释了。<br>adb devices 查看已连接的设备<br>adb -s \<serialnumber>   指定连接设备<br>adb root 获取root权限<br>adb start-server/kill-server 启动/关闭adb服务<br>adb connect \<device-ip-address> 通过IP地址连接设备<br>adb reboot 重启设备</device-ip-address></serialnumber></p>
+<h2 id="2、应用管理"><a href="#2、应用管理" class="headerlink" title="2、应用管理"></a>2、应用管理</h2><p>adb shell pm list packages 查看应用列表    </p>
+<blockquote>
+<p>-d disable应用<br>-e enabled应用<br>-s 系统应用<br>-3 第三方应用</p>
+</blockquote>
+<p>adb install 安装应用    </p>
+<blockquote>
+<p>-r 覆盖安装(INSTALL_FAILED_ALREADY_EXISTS的解决办法，或者先adb uninstall卸载再安装)</p>
+</blockquote>
+<p>adb shell pm clear \<packagename> 清除应用数据与缓存<br>（貌似之前都是通过adb shell进去data/data目录去rm对应package的数据 = =）</packagename></p>
+<p>adb shell dumpsys package \<packagename> 查看应用的详细信息，包括签名版本信息，权限信息等等</packagename></p>
+<p>adb shell dumpsys activity activitys | grep mFocusedActivity 查看前台activity</p>
+<p>adb shell dumpsys activity services \<packagename> 查看正在运行的service</packagename></p>
+<h2 id="3、应用交互"><a href="#3、应用交互" class="headerlink" title="3、应用交互"></a>3、应用交互</h2><p>adb shell am start -n \<packagename>/\<classname> 启动指定activity，这里的-n就是指定component</classname></packagename></p>
+<p>adb shell am startservice -n \<packagename>/\<classname> 启动指定service</classname></packagename></p>
+<p>adb shell am broadcast -a \<action> 发送广播，-a是指定action</action></p>
+<p>adb shell am force-stop \<packagename> 强制停止应用</packagename></p>
+<h2 id="4、数据传输"><a href="#4、数据传输" class="headerlink" title="4、数据传输"></a>4、数据传输</h2><p>adb pull [设备文件路径] [电脑目录] 复制设备中的文件到电脑,比如要拷贝某个应用数据库到电脑中查看，可以在shell中cp database到sdcard，再cp到电脑:<br>cp -r com.xxx.xxx/databases/ /sdcard<br>adb pull /sdcard/databases ~/xxx</p>
+<p>adb push [电脑文件路径] [设备目录] 复制电脑中的文件到设备</p>
+<h2 id="5、设备信息"><a href="#5、设备信息" class="headerlink" title="5、设备信息"></a>5、设备信息</h2><p>adb shell getprop 获取所有系统属性键值</p>
+<p>adb shell getprop \<property> 获取对应系统属性的值</property></p>
+<p>adb shell cat /proc/cpuinfo 查看cpu信息</p>
+<p>adb shell cat /proc/meminfo 查看内存信息</p>
+<p>adb shell ps 查看进程信息</p>
+<p>adb shell top 查看实时资源占用信息</p>
+<h2 id="6、查看Log"><a href="#6、查看Log" class="headerlink" title="6、查看Log"></a>6、查看Log</h2><p>adb logcat <em>:w  按某级别以上的日志输出，w就是warning， \</em>代表是没有指定tag</p>
+<p>adb logcat devnan:I 表示输出tag为devnan的Info级别以上日志</p>
+<p>adb logcat -c 清空日志</p>
+<p>adb shell dmesg 查看底层内核日志</p>
+<h2 id="7、其他功能"><a href="#7、其他功能" class="headerlink" title="7、其他功能"></a>7、其他功能</h2><p>屏幕截图：可以先截图到设备里，再导出到电脑<br>adb shell screencap -p /sdcard/test.png<br>adb pull /sdcard/test.png<br>新版本adb可以直接 adb exec-out screencap -p &gt; test.png</p>
+<p>屏幕录制：<br>adb shell screenrecord /sdcard/test.mp4，再导出到电脑</p>
 
       
     </div>
@@ -318,7 +349,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/其他/" rel="tag"># 其他</a>
+            <a href="/tags/android/" rel="tag"># android</a>
           
         </div>
       
@@ -331,15 +362,15 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/2017/11/15/博客怎么写/" rel="next" title="博客怎么写，我来立flag">
+                <i class="fa fa-chevron-left"></i> 博客怎么写，我来立flag
+              </a>
+            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/12/03/Android常用命令之adb/" rel="prev" title="Android常用命令之adb">
-                Android常用命令之adb <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -391,8 +422,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -449,6 +489,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、基本命令"><span class="nav-number">1.</span> <span class="nav-text">1、基本命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、应用管理"><span class="nav-number">2.</span> <span class="nav-text">2、应用管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3、应用交互"><span class="nav-number">3.</span> <span class="nav-text">3、应用交互</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4、数据传输"><span class="nav-number">4.</span> <span class="nav-text">4、数据传输</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5、设备信息"><span class="nav-number">5.</span> <span class="nav-text">5、设备信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6、查看Log"><span class="nav-number">6.</span> <span class="nav-text">6、查看Log</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7、其他功能"><span class="nav-number">7.</span> <span class="nav-text">7、其他功能</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
