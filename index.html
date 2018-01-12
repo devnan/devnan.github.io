@@ -304,7 +304,7 @@
         
           
             <p>工作中经常需要用到一些adb命令，在此整理记录下来。</p>
-<h2 id="1、基本命令"><a href="#1、基本命令" class="headerlink" title="1、基本命令"></a>1、基本命令</h2><p>基本的就不用过多解释了。<br>adb devices 查看已连接的设备<br>adb -s \<serialnumber>   指定连接设备<br>adb root 获取root权限<br>adb start-server/kill-server 启动/关闭adb服务<br>adb connect \<device-ip-address> 通过IP地址连接设备<br>adb reboot 重启设备</device-ip-address></serialnumber></p>
+<h2 id="1、基本命令"><a href="#1、基本命令" class="headerlink" title="1、基本命令"></a>1、基本命令</h2><p>基本的就不用过多解释了。<br>adb devices 查看已连接的设备<br>adb -s <serialnumber\>   指定连接设备<br>adb root 获取root权限<br>adb start-server/kill-server 启动/关闭adb服务<br>adb connect <device-ip-address\> 通过IP地址连接设备<br>adb reboot 重启设备</device-ip-address\></serialnumber\></p>
 <h2 id="2、应用管理"><a href="#2、应用管理" class="headerlink" title="2、应用管理"></a>2、应用管理</h2><p>adb shell pm list packages 查看应用列表    </p>
 <blockquote>
 <p>-d disable应用<br>-e enabled应用<br>-s 系统应用<br>-3 第三方应用</p>
@@ -313,18 +313,18 @@
 <blockquote>
 <p>-r 覆盖安装(INSTALL_FAILED_ALREADY_EXISTS的解决办法，或者先adb uninstall卸载再安装)</p>
 </blockquote>
-<p>adb shell pm clear \<packagename> 清除应用数据与缓存<br>（貌似之前都是通过adb shell进去data/data目录去rm对应package的数据 = =）</packagename></p>
-<p>adb shell dumpsys package \<packagename> 查看应用的详细信息，包括签名版本信息，权限信息等等</packagename></p>
+<p>adb shell pm clear <packagename\> 清除应用数据与缓存<br>（貌似之前都是通过adb shell进去data/data目录去rm对应package的数据 = =）</packagename\></p>
+<p>adb shell dumpsys package <packagename\> 查看应用的详细信息，包括签名版本信息，权限信息等等</packagename\></p>
 <p>adb shell dumpsys activity activitys | grep mFocusedActivity 查看前台activity</p>
-<p>adb shell dumpsys activity services \<packagename> 查看正在运行的service</packagename></p>
-<h2 id="3、应用交互"><a href="#3、应用交互" class="headerlink" title="3、应用交互"></a>3、应用交互</h2><p>adb shell am start -n \<packagename>/\<classname> 启动指定activity，这里的-n就是指定component</classname></packagename></p>
-<p>adb shell am startservice -n \<packagename>/\<classname> 启动指定service</classname></packagename></p>
-<p>adb shell am broadcast -a \<action> 发送广播，-a是指定action</action></p>
-<p>adb shell am force-stop \<packagename> 强制停止应用</packagename></p>
+<p>adb shell dumpsys activity services <packagename\> 查看正在运行的service</packagename\></p>
+<h2 id="3、应用交互"><a href="#3、应用交互" class="headerlink" title="3、应用交互"></a>3、应用交互</h2><p>adb shell am start -n <packagename\>/<classname\> 启动指定activity，这里的-n就是指定component</classname\></packagename\></p>
+<p>adb shell am startservice -n <packagename\>/<classname\> 启动指定service</classname\></packagename\></p>
+<p>adb shell am broadcast -a <action\> 发送广播，-a是指定action</action\></p>
+<p>adb shell am force-stop <packagename\> 强制停止应用</packagename\></p>
 <h2 id="4、数据传输"><a href="#4、数据传输" class="headerlink" title="4、数据传输"></a>4、数据传输</h2><p>adb pull [设备文件路径] [电脑目录] 复制设备中的文件到电脑,比如要拷贝某个应用数据库到电脑中查看，可以在shell中cp database到sdcard，再cp到电脑:<br>cp -r com.xxx.xxx/databases/ /sdcard<br>adb pull /sdcard/databases ~/xxx</p>
 <p>adb push [电脑文件路径] [设备目录] 复制电脑中的文件到设备</p>
 <h2 id="5、设备信息"><a href="#5、设备信息" class="headerlink" title="5、设备信息"></a>5、设备信息</h2><p>adb shell getprop 获取所有系统属性键值</p>
-<p>adb shell getprop \<property> 获取对应系统属性的值</property></p>
+<p>adb shell getprop <property\> 获取对应系统属性的值</property\></p>
 <p>adb shell cat /proc/cpuinfo 查看cpu信息</p>
 <p>adb shell cat /proc/meminfo 查看内存信息</p>
 <p>adb shell ps 查看进程信息</p>
@@ -592,7 +592,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2017</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
