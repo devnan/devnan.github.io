@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="cocos2d," />
 
 
 
@@ -79,29 +79,29 @@
 
 
 
-<meta name="description" content="1、Cocos2d-x 是什么Cocos2d-x 是一款开源的跨平台游戏引擎，支持C++，Lua和JavaScript语言  cocos2d 有很多个分支 敢不敢再具体一点？   1-1、Cocos2d与Unity3dUnity3d：  适合3d游戏，大型2d游戏 Unity3d引擎更强大，可以做更多事件，比如VR，A">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Developer Nan">
-<meta property="og:url" content="https://github.com/devnan/temp/Coco2d网络版.html">
+<meta name="description" content="0、前言本文简单介绍了Cocos2d-x的基本概念以及Cocos Creator开发环境搭建和入门，最后是Android平台的发布和打包。 1、Cocos2d-x 是什么Cocos2d-x 是一款开源的跨平台游戏引擎，支持C++，Lua和JavaScript语言  cocos2d 有很多个分支，蓝色区域是主流解决方案 ">
+<meta name="keywords" content="cocos2d">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android分屏多窗口实现">
+<meta property="og:url" content="https://github.com/devnan/2018/01/26/Coco2d-x入门及Android原生平台导出/index.html">
 <meta property="og:site_name" content="Developer Nan">
-<meta property="og:description" content="1、Cocos2d-x 是什么Cocos2d-x 是一款开源的跨平台游戏引擎，支持C++，Lua和JavaScript语言  cocos2d 有很多个分支 敢不敢再具体一点？   1-1、Cocos2d与Unity3dUnity3d：  适合3d游戏，大型2d游戏 Unity3d引擎更强大，可以做更多事件，比如VR，AR 要收费  Cocos2d：  适合小型2d游戏 相比Unity3d速度快，安">
+<meta property="og:description" content="0、前言本文简单介绍了Cocos2d-x的基本概念以及Cocos Creator开发环境搭建和入门，最后是Android平台的发布和打包。 1、Cocos2d-x 是什么Cocos2d-x 是一款开源的跨平台游戏引擎，支持C++，Lua和JavaScript语言  cocos2d 有很多个分支，蓝色区域是主流解决方案   敢不敢再具体一点？   1-1、Cocos2d与Unity3dUnity3d">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://ws1.sinaimg.cn/large/e4b2a3b5gy1fo4ii82rgzj20jg0b6gny">
-<meta property="og:image" content="https://github.com/Users/allen/Documents/Article/pic/2.jpg">
-<meta property="og:image" content="https://github.com/Users/allen/Documents/Article/pic/screen1.png">
-<meta property="og:image" content="https://github.com/Users/allen/Documents/Article/pic/screen2.png">
-<meta property="og:image" content="https://github.com/Users/allen/Desktop/structure.png">
-<meta property="og:image" content="https://github.com/Users/allen/Documents/Article/pic/lizi.jpeg">
-<meta property="og:image" content="https://github.com/Users/allen/Documents/Article/pic/screen5.png">
-<meta property="og:image" content="https://github.com/Users/allen/Documents/Article/pic/screen7.png">
-<meta property="og:image" content="https://github.com/Users/allen/Documents/Article/pic/2016011110592170226.jpg">
-<meta property="og:image" content="https://github.com/Users/allen/Documents/Article/pic/screen6.png">
-<meta property="og:image" content="https://github.com/Users/allen/Desktop/屏幕快照%202018-01-26%20上午9.46.21.png">
-<meta property="og:updated_time" content="2018-02-04T08:54:20.000Z">
+<meta property="og:image" content="http://p5a5cidp2.bkt.clouddn.com/CocosFamily.png">
+<meta property="og:image" content="http://p5a5cidp2.bkt.clouddn.com/2.jpg">
+<meta property="og:image" content="http://p5a5cidp2.bkt.clouddn.com/screen1.png">
+<meta property="og:image" content="http://p5a5cidp2.bkt.clouddn.com/screen2.png">
+<meta property="og:image" content="http://p5a5cidp2.bkt.clouddn.com/structure.png">
+<meta property="og:image" content="http://p5a5cidp2.bkt.clouddn.com/lizi.jpeg">
+<meta property="og:image" content="http://p5a5cidp2.bkt.clouddn.com/screen5.png">
+<meta property="og:image" content="http://p5a5cidp2.bkt.clouddn.com/screen7.png">
+<meta property="og:image" content="http://p5a5cidp2.bkt.clouddn.com/2016011110592170226.jpg">
+<meta property="og:image" content="http://p5a5cidp2.bkt.clouddn.com/screen6.png">
+<meta property="og:updated_time" content="2018-03-11T07:27:34.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Developer Nan">
-<meta name="twitter:description" content="1、Cocos2d-x 是什么Cocos2d-x 是一款开源的跨平台游戏引擎，支持C++，Lua和JavaScript语言  cocos2d 有很多个分支 敢不敢再具体一点？   1-1、Cocos2d与Unity3dUnity3d：  适合3d游戏，大型2d游戏 Unity3d引擎更强大，可以做更多事件，比如VR，AR 要收费  Cocos2d：  适合小型2d游戏 相比Unity3d速度快，安">
-<meta name="twitter:image" content="https://ws1.sinaimg.cn/large/e4b2a3b5gy1fo4ii82rgzj20jg0b6gny">
+<meta name="twitter:title" content="Android分屏多窗口实现">
+<meta name="twitter:description" content="0、前言本文简单介绍了Cocos2d-x的基本概念以及Cocos Creator开发环境搭建和入门，最后是Android平台的发布和打包。 1、Cocos2d-x 是什么Cocos2d-x 是一款开源的跨平台游戏引擎，支持C++，Lua和JavaScript语言  cocos2d 有很多个分支，蓝色区域是主流解决方案   敢不敢再具体一点？   1-1、Cocos2d与Unity3dUnity3d">
+<meta name="twitter:image" content="http://p5a5cidp2.bkt.clouddn.com/CocosFamily.png">
 
 
 
@@ -131,13 +131,13 @@
 
 
 
-  <link rel="canonical" href="https://github.com/devnan/temp/Coco2d网络版.html"/>
+  <link rel="canonical" href="https://github.com/devnan/2018/01/26/Coco2d-x入门及Android原生平台导出/"/>
 
 
 
 
 
-  <title> | Developer Nan</title>
+  <title>Android分屏多窗口实现 | Developer Nan</title>
   
 
 
@@ -252,28 +252,93 @@
 
   <div id="posts" class="posts-expand">
     
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://github.com/devnan/2018/01/26/Coco2d-x入门及Android原生平台导出/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Devnan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Developer Nan">
+    </span>
+
     
-    
-    <div class="post-block page">
       <header class="post-header">
 
-	<h1 class="post-title" itemprop="name headline"></h1>
-
-
-
-</header>
-
-      
-      
-      
-      <div class="post-body">
         
         
-          <h1 id="1、Cocos2d-x-是什么"><a href="#1、Cocos2d-x-是什么" class="headerlink" title="1、Cocos2d-x 是什么"></a>1、Cocos2d-x 是什么</h1><p>Cocos2d-x 是一款开源的跨平台游戏引擎，支持C++，Lua和JavaScript语言</p>
+          <h1 class="post-title" itemprop="name headline">Android分屏多窗口实现</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-26T00:00:00+08:00">
+                2018-01-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="0、前言"><a href="#0、前言" class="headerlink" title="0、前言"></a>0、前言</h1><p>本文简单介绍了Cocos2d-x的基本概念以及Cocos Creator开发环境搭建和入门，最后是Android平台的发布和打包。</p>
+<h1 id="1、Cocos2d-x-是什么"><a href="#1、Cocos2d-x-是什么" class="headerlink" title="1、Cocos2d-x 是什么"></a>1、Cocos2d-x 是什么</h1><p>Cocos2d-x 是一款开源的跨平台游戏引擎，支持C++，Lua和JavaScript语言</p>
 <hr>
-<p>cocos2d 有很多个分支</p>
-<h2 id=""><a href="#" class="headerlink" title=""></a><img src="https://ws1.sinaimg.cn/large/e4b2a3b5gy1fo4ii82rgzj20jg0b6gny" alt=""></h2><p>敢不敢再具体一点？</p>
-<p><img src="/Users/allen/Documents/Article/pic/2.jpg" alt=""></p>
+<p>cocos2d 有很多个分支，蓝色区域是主流解决方案</p>
+<p><img src="http://p5a5cidp2.bkt.clouddn.com/CocosFamily.png" alt=""></p>
+<hr>
+<p>敢不敢再具体一点？</p>
+<p><img src="http://p5a5cidp2.bkt.clouddn.com/2.jpg" alt=""></p>
 <hr>
 <h2 id="1-1、Cocos2d与Unity3d"><a href="#1-1、Cocos2d与Unity3d" class="headerlink" title="1-1、Cocos2d与Unity3d"></a>1-1、Cocos2d与Unity3d</h2><p>Unity3d：</p>
 <ul>
@@ -298,13 +363,20 @@
 <li>Corona<br>……</li>
 </ul>
 <hr>
-<h2 id="1-3、Cocos2d-x与OpenGL-ES、DirectX"><a href="#1-3、Cocos2d-x与OpenGL-ES、DirectX" class="headerlink" title="1-3、Cocos2d-x与OpenGL ES、DirectX"></a>1-3、Cocos2d-x与OpenGL ES、DirectX</h2><p>1）Cocos2d-x 的图形渲染基于OpenGL ES<br>2）Cocos2d-x 还包含其他如资源管理，音频播放、物理引擎等模块，比直接使用 OpenGL ES 开发游戏，更加迅速简单。让开发者将精力集中在游戏本身，而不是底层的图像绘制上。<br>3）DirectX是Windows平台图形编程接口，Cocos2d-x通过AngleProject间接支持windows平台，AngleProject的作用是将OpenGL ES转化为DirectX<br>【题外：chromium内核也是基于OpenGL，在windows上chrome的运行也是通过了AngleProject，将OpenGL翻译为DirectX】<br>所以，Cocos2d-x的跨平台特性其实也就是借助了OpenGL ES的跨平台性，从而横跨iOS, Android, WP8三个主要平台。</p>
+<h2 id="1-3、Cocos2d-x与OpenGL-ES、DirectX"><a href="#1-3、Cocos2d-x与OpenGL-ES、DirectX" class="headerlink" title="1-3、Cocos2d-x与OpenGL ES、DirectX"></a>1-3、Cocos2d-x与OpenGL ES、DirectX</h2><p>1）Cocos2d-x 的图形渲染基于OpenGL ES<br>2）Cocos2d-x 还包含其他如资源管理，音频播放、物理引擎等模块，比直接使用 OpenGL ES 开发游戏，更加迅速简单。让开发者将精力集中在游戏本身，而不是底层的图像绘制上。<br>3）DirectX是Windows平台图形编程接口，Cocos2d-x通过AngleProject间接支持windows平台，AngleProject的作用是将OpenGL ES转化为DirectX   </p>
+<blockquote>
+<p>题外：chromium内核也是基于OpenGL，在windows上chrome的运行也是通过了AngleProject，将OpenGL翻译为DirectX   </p>
+</blockquote>
+<p>所以，Cocos2d-x的跨平台特性其实也就是借助了OpenGL ES的跨平台性，从而横跨iOS, Android, WP8三个主要平台。</p>
 <hr>
 <h1 id="2、开发环境"><a href="#2、开发环境" class="headerlink" title="2、开发环境"></a>2、开发环境</h1><h4 id="Cocos-Creator："><a href="#Cocos-Creator：" class="headerlink" title="Cocos Creator："></a>Cocos Creator：</h4><p>类似于 Unity3D 的游戏编辑器，并且内部已经包含完整的 JavaScript 引擎和 cocos2d-x 原生引擎</p>
 <h4 id="VS-Code-WebStorm、SublimeText"><a href="#VS-Code-WebStorm、SublimeText" class="headerlink" title="VS Code (WebStorm、SublimeText):"></a>VS Code (WebStorm、SublimeText):</h4><p>JavaScript脚本代码编辑器</p>
-<p><img src="/Users/allen/Documents/Article/pic/screen1.png" alt=""></p>
 <hr>
-<h4 id="Android原生平台配置："><a href="#Android原生平台配置：" class="headerlink" title="Android原生平台配置："></a>Android原生平台配置：</h4><p><img src="/Users/allen/Documents/Article/pic/screen2.png" alt=""></p>
+<p>下图是mac平台显示Cocos Creator包内容的目录：</p>
+<p><img src="http://p5a5cidp2.bkt.clouddn.com/screen1.png" alt=""></p>
+<hr>
+<h4 id="Android原生平台配置："><a href="#Android原生平台配置：" class="headerlink" title="Android原生平台配置："></a>Android原生平台配置：</h4><p><img src="http://p5a5cidp2.bkt.clouddn.com/screen2.png" alt=""></p>
+<p>注：js引擎和cocos2d-x引擎在Cocos Creator已经自带了，不用我们配置。另外，使用android studio也要配置ANT路径。</p>
 <hr>
 <h1 id="3、关于Cocos-Creator"><a href="#3、关于Cocos-Creator" class="headerlink" title="3、关于Cocos Creator"></a>3、关于Cocos Creator</h1><ul>
 <li>组件化</li>
@@ -313,11 +385,10 @@
 <li>跨平台发布</li>
 </ul>
 <hr>
-<p>Cocos Creator 的技术架构图<br><img src="/Users/allen/Desktop/structure.png" alt=""></p>
-<p><a href="https://www.zhihu.com/question/39663501" target="_blank" rel="noopener">https://www.zhihu.com/question/39663501</a></p>
+<p>Cocos Creator 的技术架构图<br><img src="http://p5a5cidp2.bkt.clouddn.com/structure.png" alt=""></p>
 <hr>
 <h2 id="3-1、组件化概念"><a href="#3-1、组件化概念" class="headerlink" title="3-1、组件化概念"></a>3-1、组件化概念</h2><p>Cocos Creator 工作流以组件化开发为核心，也就是基于组件的实体系统开发模式 (Entity-Component System)。简单的说，就是以组合而非继承的方式进行实体的构建。</p>
-<p><img src="/Users/allen/Documents/Article/pic/lizi.jpeg" alt=""></p>
+<p><img src="http://p5a5cidp2.bkt.clouddn.com/lizi.jpeg" alt=""></p>
 <p>一个实体指的是存在于游戏世界中的物体，多个组件可以挂载到实体上，比如动画组件，碰撞组件，渲染组件等。</p>
 <hr>
 <h2 id="3-2、数据驱动代替代码驱动"><a href="#3-2、数据驱动代替代码驱动" class="headerlink" title="3-2、数据驱动代替代码驱动"></a>3-2、数据驱动代替代码驱动</h2><ul>
@@ -352,7 +423,9 @@
 <hr>
 <p><strong>node.dispatchEvent</strong> 采用冒泡派送的方式分发事件。冒泡派送会将事件从事件发起节点，不断地向上传递给他的父级节点，直到到达根节点或者在某个节点通过event.stopPropagation() 拦截了此事件。</p>
 <p><strong>触摸事件</strong>也支持节点树的事件冒泡。</p>
-<p>【没有事件捕获的过程，不像android，而且没有消费事件即阻断】</p>
+<blockquote>
+<p>和android中的事件分发机制差别比较大，没有事件捕获的过程，而且消费事件后需要主动去拦截事件传递</p>
+</blockquote>
 <hr>
 <h1 id="5、其他组件"><a href="#5、其他组件" class="headerlink" title="5、其他组件"></a>5、其他组件</h1><ul>
 <li>物理组件</li>
@@ -366,40 +439,80 @@
 </li>
 </ul>
 <hr>
-<p><img src="/Users/allen/Documents/Article/pic/screen5.png" alt=""></p>
+<p><img src="http://p5a5cidp2.bkt.clouddn.com/screen5.png" alt=""></p>
 <hr>
 <p>下面目录可以拿到构建编译后android平台下的apk</p>
-<p><img src="/Users/allen/Documents/Article/pic/screen7.png" alt=""></p>
+<p><img src="http://p5a5cidp2.bkt.clouddn.com/screen7.png" alt=""></p>
 <hr>
-<p>这样是不是都搞定了？可以开心地玩游戏了<br><img src="/Users/allen/Documents/Article/pic/2016011110592170226.jpg" alt=""></p>
+<p>这样是不是都搞定了？可以开心地玩游戏了</p>
+<p><img src="http://p5a5cidp2.bkt.clouddn.com/2016011110592170226.jpg" alt=""></p>
 <hr>
-<p>最后还要导入到原生平台进行开发，以修改一些默认配置</p>
-<p><img src="/Users/allen/Documents/Article/pic/screen6.png" alt=""></p>
+<p>最后还要导入到原生平台进行开发，以修改一些默认配置，比如应用图标，混淆开关等<br><img src="http://p5a5cidp2.bkt.clouddn.com/screen6.png" alt=""></p>
+<p>这里可以写一个shell脚本处理整个流程，从构建编译，导出原生平台，到部分配置的修改，这样修改了代码，可以直接跑脚本拿到Apk，方便并且快速。全程只需1分钟左右。</p>
 <hr>
-<p>构建编译和重新打包脚本<br><img src="/Users/allen/Desktop/屏幕快照%202018-01-26%20上午9.46.21.png" alt=""></p>
-<hr>
-<h1 id="7、感想"><a href="#7、感想" class="headerlink" title="7、感想"></a>7、感想</h1><ul>
-<li><p>js是一门动态语言，虽然灵活，但是后期不好维护，后面考虑转TypeScript<br>【增加了静态类型检查】</p>
-</li>
-<li><p>UI、字体、粒子效果和动画都有编辑器可以做，有个做游戏美术的就好了</p>
-</li>
-</ul>
-<hr>
-<h1 id="8、推荐资料"><a href="#8、推荐资料" class="headerlink" title="8、推荐资料"></a>8、推荐资料</h1><ul>
+<h1 id="7、推荐资料"><a href="#7、推荐资料" class="headerlink" title="7、推荐资料"></a>7、推荐资料</h1><ul>
 <li>Cocos Creator v1.8.x 用户手册<br><a href="http://docs.cocos.com/creator/manual/zh/" target="_blank" rel="noopener">http://docs.cocos.com/creator/manual/zh/</a></li>
 <li>Cocos Creator 之旅：<br><a href="http://www.cocos.com/607" target="_blank" rel="noopener">http://www.cocos.com/607</a></li>
 </ul>
-<hr>
-<h1 id="Q-amp-A"><a href="#Q-amp-A" class="headerlink" title="Q &amp; A"></a>Q &amp; A</h1>
-        
-      </div>
-      
-      
+<h1 id="8、结语"><a href="#8、结语" class="headerlink" title="8、结语"></a>8、结语</h1><p>Cocos2d官网已经有很详细的资料了，更多细节可以上官网查看，对上面有任何疑问及建议欢迎留言啦</p>
+
       
     </div>
     
     
     
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/cocos2d/" rel="tag"># cocos2d</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/12/03/Android常用命令之adb/" rel="next" title="Android常用命令之adb">
+                <i class="fa fa-chevron-left"></i> Android常用命令之adb
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
   </div>
 
 
@@ -514,7 +627,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1、Cocos2d-x-是什么"><span class="nav-number">1.</span> <span class="nav-text">1、Cocos2d-x 是什么</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-number">1.1.</span> <span class="nav-text"></span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1、Cocos2d与Unity3d"><span class="nav-number">1.2.</span> <span class="nav-text">1-1、Cocos2d与Unity3d</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2、其他游戏引擎"><span class="nav-number">1.3.</span> <span class="nav-text">1-2、其他游戏引擎</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3、Cocos2d-x与OpenGL-ES、DirectX"><span class="nav-number">1.4.</span> <span class="nav-text">1-3、Cocos2d-x与OpenGL ES、DirectX</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2、开发环境"><span class="nav-number">2.</span> <span class="nav-text">2、开发环境</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Cocos-Creator："><span class="nav-number">2.0.0.1.</span> <span class="nav-text">Cocos Creator：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#VS-Code-WebStorm、SublimeText"><span class="nav-number">2.0.0.2.</span> <span class="nav-text">VS Code (WebStorm、SublimeText):</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Android原生平台配置："><span class="nav-number">2.0.0.3.</span> <span class="nav-text">Android原生平台配置：</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3、关于Cocos-Creator"><span class="nav-number">3.</span> <span class="nav-text">3、关于Cocos Creator</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1、组件化概念"><span class="nav-number">3.1.</span> <span class="nav-text">3-1、组件化概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2、数据驱动代替代码驱动"><span class="nav-number">3.2.</span> <span class="nav-text">3-2、数据驱动代替代码驱动</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4、脚本组件开发"><span class="nav-number">4.</span> <span class="nav-text">4、脚本组件开发</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1、基本概念"><span class="nav-number">4.1.</span> <span class="nav-text">4-1、基本概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-2、简单的脚本示例"><span class="nav-number">4.2.</span> <span class="nav-text">4-2、简单的脚本示例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-3、生命周期"><span class="nav-number">4.3.</span> <span class="nav-text">4-3、生命周期</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-4、事件分发机制"><span class="nav-number">4.4.</span> <span class="nav-text">4-4、事件分发机制</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5、其他组件"><span class="nav-number">5.</span> <span class="nav-text">5、其他组件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6、构建发布流程"><span class="nav-number">6.</span> <span class="nav-text">6、构建发布流程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#7、感想"><span class="nav-number">7.</span> <span class="nav-text">7、感想</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#8、推荐资料"><span class="nav-number">8.</span> <span class="nav-text">8、推荐资料</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Q-amp-A"><span class="nav-number">9.</span> <span class="nav-text">Q & A</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0、前言"><span class="nav-number">1.</span> <span class="nav-text">0、前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1、Cocos2d-x-是什么"><span class="nav-number">2.</span> <span class="nav-text">1、Cocos2d-x 是什么</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1、Cocos2d与Unity3d"><span class="nav-number">2.1.</span> <span class="nav-text">1-1、Cocos2d与Unity3d</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2、其他游戏引擎"><span class="nav-number">2.2.</span> <span class="nav-text">1-2、其他游戏引擎</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3、Cocos2d-x与OpenGL-ES、DirectX"><span class="nav-number">2.3.</span> <span class="nav-text">1-3、Cocos2d-x与OpenGL ES、DirectX</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2、开发环境"><span class="nav-number">3.</span> <span class="nav-text">2、开发环境</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Cocos-Creator："><span class="nav-number">3.0.0.1.</span> <span class="nav-text">Cocos Creator：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#VS-Code-WebStorm、SublimeText"><span class="nav-number">3.0.0.2.</span> <span class="nav-text">VS Code (WebStorm、SublimeText):</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Android原生平台配置："><span class="nav-number">3.0.0.3.</span> <span class="nav-text">Android原生平台配置：</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3、关于Cocos-Creator"><span class="nav-number">4.</span> <span class="nav-text">3、关于Cocos Creator</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1、组件化概念"><span class="nav-number">4.1.</span> <span class="nav-text">3-1、组件化概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2、数据驱动代替代码驱动"><span class="nav-number">4.2.</span> <span class="nav-text">3-2、数据驱动代替代码驱动</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4、脚本组件开发"><span class="nav-number">5.</span> <span class="nav-text">4、脚本组件开发</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1、基本概念"><span class="nav-number">5.1.</span> <span class="nav-text">4-1、基本概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-2、简单的脚本示例"><span class="nav-number">5.2.</span> <span class="nav-text">4-2、简单的脚本示例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-3、生命周期"><span class="nav-number">5.3.</span> <span class="nav-text">4-3、生命周期</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-4、事件分发机制"><span class="nav-number">5.4.</span> <span class="nav-text">4-4、事件分发机制</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5、其他组件"><span class="nav-number">6.</span> <span class="nav-text">5、其他组件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6、构建发布流程"><span class="nav-number">7.</span> <span class="nav-text">6、构建发布流程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#7、推荐资料"><span class="nav-number">8.</span> <span class="nav-text">7、推荐资料</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#8、结语"><span class="nav-number">9.</span> <span class="nav-text">8、结语</span></a></li></ol></div>
             
 
           </div>
