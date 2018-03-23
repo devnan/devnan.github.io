@@ -9,17 +9,17 @@
   <title>Android常用命令之adb | Developer Nan</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="工作中经常需要用到一些adb命令，在此整理记录下来。 1、基本命令基本的就不用过多解释了。adb devices 查看已连接的设备adb -s    指定连接设备adb root 获取root权限adb start-server/kill-server 启动/关闭adb服务adb connect  通过IP地址连接设备">
-<meta name="keywords" content="android">
+<meta name="keywords" content="android,技术">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Android常用命令之adb">
 <meta property="og:url" content="https://github.com/devnan/2017/12/03/Android常用命令之adb/index.html">
 <meta property="og:site_name" content="Developer Nan">
-<meta property="og:description" content="工作中经常需要用到一些adb命令，在此整理记录下来。 1、基本命令基本的就不用过多解释了。adb devices 查看已连接的设备adb -s    指定连接设备adb root 获取root权限adb start-server/kill-server 启动/关闭adb服务adb connect  通过IP地址连接设备adb reboot 重启设备 2、应用管理adb shell pm list">
+<meta property="og:description" content="工作中经常需要用到一些adb命令，在此整理记录下来。 1、基本命令基本的就不用过多解释了。adb devices 查看已连接的设备adb -s    指定连接设备adb root 获取root权限adb start-server/kill-server 启动/关闭adb服务adb connect  通过IP地址连接设备adb reboot 重启设备">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-01-12T16:15:45.000Z">
+<meta property="og:updated_time" content="2018-03-23T16:43:31.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android常用命令之adb">
-<meta name="twitter:description" content="工作中经常需要用到一些adb命令，在此整理记录下来。 1、基本命令基本的就不用过多解释了。adb devices 查看已连接的设备adb -s    指定连接设备adb root 获取root权限adb start-server/kill-server 启动/关闭adb服务adb connect  通过IP地址连接设备adb reboot 重启设备 2、应用管理adb shell pm list">
+<meta name="twitter:description" content="工作中经常需要用到一些adb命令，在此整理记录下来。 1、基本命令基本的就不用过多解释了。adb devices 查看已连接的设备adb -s    指定连接设备adb root 获取root权限adb start-server/kill-server 启动/关闭adb服务adb connect  通过IP地址连接设备adb reboot 重启设备">
   
     <link rel="alternative" href="/atom.xml" title="Developer Nan" type="application/atom+xml">
   
@@ -65,6 +65,8 @@
 				<li><a href="/tags/随笔/">随笔</a></li>
 	        
 				<li><a href="/tags/技术/">技术</a></li>
+	        
+				<li><a href="/tags/读书笔记/">读书笔记</a></li>
 	        
 			</ul>
 		</nav>
@@ -120,6 +122,8 @@
 			
 				
 			
+				
+			
 			
 			
 			<nav class="header-nav">
@@ -136,11 +140,13 @@
 				<ul style="width: 70%">
 				
 				
-					<li style="width: 33.333333333333336%"><a href="/">主页</a></li>
+					<li style="width: 25%"><a href="/">主页</a></li>
 		        
-					<li style="width: 33.333333333333336%"><a href="/tags/随笔/">随笔</a></li>
+					<li style="width: 25%"><a href="/tags/随笔/">随笔</a></li>
 		        
-					<li style="width: 33.333333333333336%"><a href="/tags/技术/">技术</a></li>
+					<li style="width: 25%"><a href="/tags/技术/">技术</a></li>
+		        
+					<li style="width: 25%"><a href="/tags/读书笔记/">读书笔记</a></li>
 		        
 				</ul>
 			</nav>
@@ -176,7 +182,7 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>工作中经常需要用到一些adb命令，在此整理记录下来。</p>
-<h2 id="1、基本命令"><a href="#1、基本命令" class="headerlink" title="1、基本命令"></a>1、基本命令</h2><p>基本的就不用过多解释了。<br>adb devices 查看已连接的设备<br>adb -s <serialnumber\>   指定连接设备<br>adb root 获取root权限<br>adb start-server/kill-server 启动/关闭adb服务<br>adb connect <device-ip-address\> 通过IP地址连接设备<br>adb reboot 重启设备</device-ip-address\></serialnumber\></p>
+<h2 id="1、基本命令"><a href="#1、基本命令" class="headerlink" title="1、基本命令"></a>1、基本命令</h2><p>基本的就不用过多解释了。<br>adb devices 查看已连接的设备<br>adb -s <serialnumber\>   指定连接设备<br>adb root 获取root权限<br>adb start-server/kill-server 启动/关闭adb服务<br>adb connect <device-ip-address\> 通过IP地址连接设备<br>adb reboot 重启设备<br><a id="more"></a></device-ip-address\></serialnumber\></p>
 <h2 id="2、应用管理"><a href="#2、应用管理" class="headerlink" title="2、应用管理"></a>2、应用管理</h2><p>adb shell pm list packages 查看应用列表    </p>
 <blockquote>
 <p>-d disable应用<br>-e enabled应用<br>-s 系统应用<br>-3 第三方应用</p>
@@ -221,6 +227,10 @@
 			 
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">android</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">技术</a>
         		</li>
       		
 		</ul>
@@ -300,8 +310,8 @@
     </a>
   
   
-    <a href="/2017/11/15/博客怎么写/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">博客怎么写，我来立flag</div>
+    <a href="/2017/03/26/《梁思成与林徽因》观后感/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">《梁思成与林徽因》观后感</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -461,15 +471,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">技术</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">cocos2d</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">-随笔 -技术</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">其他</a>
+                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
               </li>
             
             <div class="clearfix"></div>
