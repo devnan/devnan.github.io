@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://yoursite.com/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:locale" content="default">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hexo">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-Android分屏多窗口实现" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/07/29/Android分屏多窗口实现/" class="article-date">
+  <time datetime="2016-07-29T01:56:32.000Z" itemprop="datePublished">2016-07-29</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/07/29/Android分屏多窗口实现/">Android分屏多窗口实现</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>基于公司产品的要求，需要研究app如何在Android N中支持分屏模式。以下是自己思路的总结，也顺便帮助到各位。</p>
+<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p><strong>Android N</strong> 的新特性就是对应用分屏的支持。在分屏模式中，系统以左右并排或上下并排的方式分屏显示两个应用。用户可以通过拖动两个应用之间的分界线来改变两个应用的尺寸。</p>
+<p>用户可以通过以下方式切换到分屏模式：</p>
+<ul>
+<li>打开 Overview 屏幕并长按 Activity 标题，则可以拖动该 Activity 至屏幕突出显示的区域，使Activity 进入多窗口模式。</li>
+<li>长按 Overview 按钮，设备上的当前 Activity 将进入分屏模式，同时将打开 Overview 屏幕，可在该屏幕中选择要共享屏幕的另一个 Activity。</li>
+</ul>
+<p>另外，用户可以在两个 Activity 共享屏幕的同时在这两个 Activity 之间拖放数据 </p>
+<h1 id="分屏模式下的生命周期"><a href="#分屏模式下的生命周期" class="headerlink" title="分屏模式下的生命周期"></a>分屏模式下的生命周期</h1><p>首先，分屏模式并没有改变Activity的生命周期。<br>在分屏模式中，与用户交互的 Activity 为活动状态。另一个 Activity 虽然可见，但处于暂停状态。 如果用户与此暂停的 Activity 交互，该 Activity 将恢复，而之前的Activity 将暂停。所以，在分屏模式下，应用在对用户可见的状态下进入paused状态，可能仍需要继续其操作。就如一个视频播放器，如果进入了分屏模式，不应该在onPaused()中暂停视频播放，而应该在onStop()中才暂停视频，然后对应的在onStart中恢复视频播放。</p>
+<blockquote>
+<p>另外，在Android N的Activity类中，增加了一个void onMultiWindowChanged(boolean<br>inMultiWindow)回调，Activity 进入或退出分屏模式时系统将调用此方法。 在 Activity<br>进入分屏模式时，系统向该方法传递 true 值，在退出分屏模式时，则传递 false 值。</p>
+</blockquote>
+<p>#处理运行时变更<br>在分屏模式显示应用，调整应用大小，或将应用恢复到全屏模式时，系统将通知 Activity 发生配置变更。这与<strong>横竖屏切换</strong>时的 Activity 生命周期影响相同，即Activity会重启(调用onPause–&gt;onStop–&gt;onDestory–&gt;onCreate–&gt;onStart–&gt;onResume),<br>为了分屏后使Activity恢复原来的状态，一般有两种方法。一是在Activity重启前保存数据；二是阻止Activity的重启。</p>
+<ul>
+<li>在Activity重启前保存数据 </li>
+</ul>
+<p>1、通过onSaveInstanceState()保存bundle数据,以保证该状态可以在onCreate(Bundle)或者onRestoreInstanceState(Bundle)中恢复<br>2、重启 Activity需要恢复大量数据、重新建立网络连接等，那么因配置变更而引起的Activity重启会很缓慢，这时可以通过保存 Fragment来减轻重新初始化 Activity的负担，具体做法是，在Activity中包含此Fragment的引用，而Fragment包含要保存的对象的引用；接着，通过在Fragment的onCreate方法中设置setRetainInstance(true)对Fragment进行非中断式的保存；这样，当Activity被销毁重启时，fragment实例还在，可以Activity中恢复了对fragment的引用从而恢复数据。具体可参考<a href="https://developer.android.com/guide/topics/resources/runtime-changes.html?hl=zh-cn#RetainingAnObject" target="_blank" rel="noopener">处理运行时变更</a>。</p>
+<ul>
+<li>阻止Activity的重启</li>
+</ul>
+<p>在清单文件中声明：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;activity </span><br><span class="line">   android:name=&quot;.MyActivity&quot;</span><br><span class="line">   android:configChanges=&quot;orientation|keyboardHidden|screenSize&quot;</span><br><span class="line">   android:label=&quot;@string/app_name&quot;&gt;</span><br></pre></td></tr></table></figure>
+<p>android:configChanges属性最常用的值包括 “orientation” ， “keyboardHidden”和”screenSize”，分别用于避免因屏幕方向，可用键盘改变和屏幕尺寸而导致重启。<br>这种方法不同于第一种，系统不会自动根据当前的配置去应用资源。所以如果需要的话，要在onConfigurationChanged()中自行设置备用资源，即通过setContentView()去调用相应的layout文件。不需要基于这些配置变更去更新应用，则可不用实现onConfigurationChanged()。</p>
+<p>注意，第二种方法官方不推荐使用，主要是因为Activity销毁重启不仅仅在分屏模式下会出现，比如手机内存不够时Activity同样可能被销毁，而这时候我们还是需要在Activity销毁前做好数据状态的保存。当然，如果没有备用资源的话，也就是Activity横向和纵向都共用同一个layout文件，则第二种方法无疑是更好的选择。</p>
+<h1 id="配置分屏模式"><a href="#配置分屏模式" class="headerlink" title="配置分屏模式"></a>配置分屏模式</h1><p>在清单的activity或application节点中设置该属性，启用或禁用分屏显示：</p>
+<pre><code>android:resizeableActivity=[&quot;true&quot; | &quot;false&quot;]
+</code></pre><p>如果该属性设置为 true，Activity 将能以分屏和自由形状模式启动。 如果此属性设置为 false，Activity 将不支持多窗口模式。如果该值为 false，且用户尝试在分屏模式下启动 Activity，该 Activity 将全屏显示。 </p>
+<blockquote>
+<p>如果应用没有适配到Android N（targetSDKVersion &lt; Android<br>N，compileSDKVersion &lt; Android N)，也是可以支持分屏的。系统将强制调整应用大小。不过会显示对话框提醒用户应用可能会发生异常。 </p>
+</blockquote>
+<p>另外，在Android N中，可以在清单文件中添加layout节点，并设置一些新增加的属性，通过这些属性来设置分屏模式的行为，如最小尺寸等<br>例如，以下节点显示了如何指定 Activity 在自由形状模式中显示时 Activity 的默认大小、位置和最小尺寸：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;activity android:name=&quot;.MyActivity&quot;&gt;</span><br><span class="line">    &lt;layout android:defaultHeight=&quot;500dp&quot;</span><br><span class="line">          android:defaultWidth=&quot;600dp&quot;</span><br><span class="line">          android:gravity=&quot;top|end&quot;</span><br><span class="line">          android:minimalHeight=&quot;450dp&quot;</span><br><span class="line">          android:minimalWidth=&quot;300dp&quot; /&gt;</span><br><span class="line">&lt;/activity&gt;</span><br></pre></td></tr></table></figure>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://developer.android.com/preview/features/multi-window.html#configuring" target="_blank" rel="noopener">https://developer.android.com/preview/features/multi-window.html#configuring</a><br><a href="http://blog.csdn.net/airk000/article/details/38557605" target="_blank" rel="noopener">http://blog.csdn.net/airk000/article/details/38557605</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/07/29/Android分屏多窗口实现/" data-id="cjtwzlh9800001zpv7lb0hv6r" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android/">android</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Cocos2d-x入门及Android原生平台发布" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2013/07/13/Cocos2d-x入门及Android原生平台发布/" class="article-date">
+  <time datetime="2013-07-13T12:46:25.000Z" itemprop="datePublished">2013-07-13</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2013/07/13/Cocos2d-x入门及Android原生平台发布/">Cocos2d-x</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="0、前言"><a href="#0、前言" class="headerlink" title="0、前言"></a>0、前言</h1><p>本文简单介绍了Cocos2d-x的基本概念以及Cocos Creator开发环境搭建和入门，最后是Android平台的发布和打包。</p>
+<h1 id="1、Cocos2d-x-是什么"><a href="#1、Cocos2d-x-是什么" class="headerlink" title="1、Cocos2d-x 是什么"></a>1、Cocos2d-x 是什么</h1><p>Cocos2d-x 是一款开源的跨平台游戏引擎，支持C++，Lua和JavaScript语言；Cocos2d 有很多个分支，蓝色区域是目前的主流解决方案。</p>
+<p><img src="http://p5a5cidp2.bkt.clouddn.com/CocosFamily.png" alt></p>
+<hr>
+<h2 id="1-1、Cocos2d与Unity3d"><a href="#1-1、Cocos2d与Unity3d" class="headerlink" title="1-1、Cocos2d与Unity3d"></a>1-1、Cocos2d与Unity3d</h2><p>Unity3d：</p>
+<ul>
+<li>适合3d游戏，大型2d游戏</li>
+<li>Unity3d引擎更强大，可以做更多事件，比如VR，AR</li>
+<li>要收费</li>
+</ul>
+<p>Cocos2d：</p>
+<ul>
+<li>适合小型2d游戏</li>
+<li>相比Unity3d速度快，安装包小</li>
+<li>免费开源</li>
+<li>可能会踩坑较多</li>
+</ul>
+<hr>
+<h2 id="1-2、其他游戏引擎"><a href="#1-2、其他游戏引擎" class="headerlink" title="1-2、其他游戏引擎"></a>1-2、其他游戏引擎</h2><ul>
+<li>Libgdx</li>
+<li><p>AndEngine</p>
+</li>
+<li><p>Unreal</p>
+</li>
+<li>Corona<br>……</li>
+</ul>
+<hr>
+<h2 id="1-3、Cocos2d-x与OpenGL-ES、DirectX"><a href="#1-3、Cocos2d-x与OpenGL-ES、DirectX" class="headerlink" title="1-3、Cocos2d-x与OpenGL ES、DirectX"></a>1-3、Cocos2d-x与OpenGL ES、DirectX</h2><p>1）Cocos2d-x 的图形渲染基于OpenGL ES<br>2）Cocos2d-x 还包含其他如资源管理，音频播放、物理引擎等模块，比直接使用 OpenGL ES 开发游戏，更加迅速简单。让开发者将精力集中在游戏本身，而不是底层的图像绘制上。<br>3）DirectX是Windows平台图形编程接口，Cocos2d-x通过AngleProject间接支持windows平台，AngleProject的作用是将OpenGL ES转化为DirectX </p>
+<p>所以，Cocos2d-x的跨平台特性其实也就是借助了OpenGL ES的跨平台性，从而横跨iOS, Android, WP8三个主要平台。</p>
+<hr>
+<h1 id="2、开发环境"><a href="#2、开发环境" class="headerlink" title="2、开发环境"></a>2、开发环境</h1><h4 id="Cocos-Creator："><a href="#Cocos-Creator：" class="headerlink" title="Cocos Creator："></a>Cocos Creator：</h4><p>类似于 Unity3D 的游戏编辑器，并且内部已经包含完整的 JavaScript 引擎和 cocos2d-x 原生引擎</p>
+<h4 id="VS-Code-WebStorm、SublimeText"><a href="#VS-Code-WebStorm、SublimeText" class="headerlink" title="VS Code (WebStorm、SublimeText):"></a>VS Code (WebStorm、SublimeText):</h4><p>JavaScript脚本代码编辑器</p>
+<hr>
+<p>下图是mac平台显示Cocos Creator包内容的目录：</p>
+<p><img src="http://p5a5cidp2.bkt.clouddn.com/screen1.png" alt></p>
+<hr>
+<h4 id="Android原生平台配置："><a href="#Android原生平台配置：" class="headerlink" title="Android原生平台配置："></a>Android原生平台配置：</h4><p><img src="http://p5a5cidp2.bkt.clouddn.com/screen2.png" alt></p>
+<blockquote>
+<p>注：js引擎和cocos2d-x引擎在Cocos Creator已经自带了，不用我们配置。另外，使用android studio也要配置ANT路径。</p>
+</blockquote>
+<hr>
+<h1 id="3、关于Cocos-Creator"><a href="#3、关于Cocos-Creator" class="headerlink" title="3、关于Cocos Creator"></a>3、关于Cocos Creator</h1><ul>
+<li>组件化</li>
+<li>脚本化</li>
+<li>数据驱动</li>
+<li>跨平台发布</li>
+</ul>
+<hr>
+<p>Cocos Creator 的技术架构图<br><img src="http://p5a5cidp2.bkt.clouddn.com/structure.png" alt></p>
+<hr>
+<h2 id="3-1、组件化概念"><a href="#3-1、组件化概念" class="headerlink" title="3-1、组件化概念"></a>3-1、组件化概念</h2><p>Cocos Creator 工作流以组件化开发为核心，也就是基于组件的实体系统开发模式 (Entity-Component System)。简单的说，就是以组合而非继承的方式进行实体的构建。</p>
+<p><img src="http://p5a5cidp2.bkt.clouddn.com/lizi.jpeg" alt></p>
+<p>一个实体指的是存在于游戏世界中的物体，多个组件可以挂载到实体上，比如动画组件，碰撞组件，渲染组件等。</p>
+<hr>
+<h2 id="3-2、数据驱动代替代码驱动"><a href="#3-2、数据驱动代替代码驱动" class="headerlink" title="3-2、数据驱动代替代码驱动"></a>3-2、数据驱动代替代码驱动</h2><ul>
+<li>所有场景都会序列化为数据，在运行时使用这些数据来重新构建场景，界面，动画等元素。</li>
+<li>数据驱动实现了场景的可视化，使得场景可以被自由的编辑。从而使入口点变成了编辑器，而不是代码。</li>
+</ul>
+<hr>
+<h1 id="4、脚本组件开发"><a href="#4、脚本组件开发" class="headerlink" title="4、脚本组件开发"></a>4、脚本组件开发</h1><h2 id="4-1、基本概念"><a href="#4-1、基本概念" class="headerlink" title="4-1、基本概念"></a>4-1、基本概念</h2><ul>
+<li><p>导演和场景<br>场景相当于一部电影的某个场景画面，导演就负责画面的切换。</p>
+</li>
+<li><p>节点和组件<br>把功能点设计封装成组件(Component)的形式，然后将这些组件，按需挂载到一个个类似于容器的节点上，从而形成一个个功能各异的实体(Entity)</p>
+</li>
+</ul>
+<hr>
+<h2 id="4-2、简单的脚本示例"><a href="#4-2、简单的脚本示例" class="headerlink" title="4-2、简单的脚本示例"></a>4-2、简单的脚本示例</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">cc.Class(&#123;</span><br><span class="line">    extends: cc.Component,</span><br><span class="line">    </span><br><span class="line">    //属性声明，会展示在属性检查器中</span><br><span class="line">    properties: &#123;</span><br><span class="line">        username: &quot;Devnan&quot;, //基本JavaScript类型, string</span><br><span class="line">        age: 18, //基本JavaScript类型, number</span><br><span class="line">        girlFriend: cc.Node //cc类型，cc.Node用于获取其他节点(实体)</span><br><span class="line">    &#125;,</span><br><span class="line">    </span><br><span class="line">    //构造函数</span><br><span class="line">    ctor: function () &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 首次加载，做初始化操作</span><br><span class="line">    onLoad: function () &#123;</span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">    // 每一帧渲染都会调用此函数进行更新</span><br><span class="line">    update: function (dt) &#123;</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="4-3、生命周期"><a href="#4-3、生命周期" class="headerlink" title="4-3、生命周期"></a>4-3、生命周期</h2><ul>
+<li>onLoad：组件首次激活时触发，在 start 调用前执行，一般做初始化操作</li>
+<li>start：第一次执行 update 前触发，初始化一些可能在update时发生改变的中间状态</li>
+<li>update：每一帧渲染前触发，做更新操作</li>
+<li>lateUpdate：update 执行完之后触发，做动画更新后的一些额外操作</li>
+<li>onDestroy：当组件或者所在节点调用了destroy()，则会调用此回调，并做回收操作<br>……</li>
+</ul>
+<hr>
+<h2 id="4-4、事件分发机制"><a href="#4-4、事件分发机制" class="headerlink" title="4-4、事件分发机制"></a>4-4、事件分发机制</h2><ul>
+<li>node.on(type, callback, target)：持续监听 node 的 type 事件。</li>
+<li>node.once(type, callback, target)：监听一次 node 的 type 事件。</li>
+<li>node.off(type, callback, target)：取消监听所有 type 事件或取消 type 的某个监听器（用 callback 和 target 指定）。</li>
+<li>node.emit(type, detail)：通知所有监听 type 事件的监听器，可以发送一个附加参数。</li>
+<li>node.dispatchEvent(event)：发送一个事件给它的监听器，支持冒泡。</li>
+</ul>
+<hr>
+<p><strong>node.dispatchEvent</strong> 采用冒泡派送的方式分发事件。冒泡派送会将事件从事件发起节点，不断地向上传递给他的父级节点，直到到达根节点或者在某个节点通过event.stopPropagation() 拦截了此事件。</p>
+<p><strong>触摸事件</strong>也支持节点树的事件冒泡。</p>
+<blockquote>
+<p>注：和android的事件分发机制有差别，cocos2d没有事件捕获的过程，而且消费事件后需要主动去拦截事件传递</p>
+</blockquote>
+<hr>
+<h1 id="5、其他组件"><a href="#5、其他组件" class="headerlink" title="5、其他组件"></a>5、其他组件</h1><ul>
+<li>物理组件</li>
+<li>动画组件<br>……</li>
+</ul>
+<hr>
+<h1 id="6、构建发布流程"><a href="#6、构建发布流程" class="headerlink" title="6、构建发布流程"></a>6、构建发布流程</h1><ul>
+<li><p>link、default：使用源码引擎构建，速度慢</p>
+</li>
+<li><p>binary：使用预编译库构建，无需编译C++，速度快，但是无法在原生工程里调试引擎源码</p>
+</li>
+</ul>
+<hr>
+<p><img src="http://p5a5cidp2.bkt.clouddn.com/screen5.png" alt></p>
+<hr>
+<p>下面目录可以拿到构建编译后android平台下的apk</p>
+<p><img src="http://p5a5cidp2.bkt.clouddn.com/screen7.png" alt></p>
+<hr>
+<p>这样是不是都搞定了？可以开心地玩游戏了</p>
+<p><img src="http://p5a5cidp2.bkt.clouddn.com/2016011110592170226.jpg" alt></p>
+<hr>
+<p>最后还要导入到原生平台Android Studio进行开发，以修改一些默认配置，比如应用图标，混淆开关等<br><img src="http://p5a5cidp2.bkt.clouddn.com/screen6.png" alt></p>
+<p>这里可以用脚本处理整个流程，从构建编译，导出原生平台，到部分配置项的修改，以加快打包速度。</p>
+<p><img src="http://p5a5cidp2.bkt.clouddn.com/20180601093233.png" alt></p>
+<p>可以在工程主目录新建android-build文件夹，builder.json是构建编译的配置文件，build.sh是整个流程的脚本，如下，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/env bash</span><br><span class="line">PROJECT_PATH=$(dirname `pwd`)</span><br><span class="line"></span><br><span class="line"># 构建编译</span><br><span class="line">buildCompile()&#123;</span><br><span class="line">    echo &quot;PROJECT_PATH:&quot; $PROJECT_PATH</span><br><span class="line">    /Applications/CocosCreator.app/Contents/MacOS/CocosCreator --path $PROJECT_PATH --build &quot;configPath=$PROJECT_PATH/android-build/builder.json;autoCompile=true&quot;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">handleAndroidProject() &#123;</span><br><span class="line">    # 适配环境</span><br><span class="line">    echo &quot;android.enableAapt2=false&quot; &gt;&gt; $ANDROID_PATH&quot;/gradle.properties&quot;</span><br><span class="line">    </span><br><span class="line">    # 替换资源</span><br><span class="line">    ANDROID_PATH=$PROJECT_PATH&quot;/build/jsb-binary/frameworks/runtime-src/proj.android-studio&quot;</span><br><span class="line">    RES_PATH=$&#123;ANDROID_PATH&#125;&quot;/app/res&quot;</span><br><span class="line">    echo &quot;ANDROID_PATH:&quot; $ANDROID_PATH</span><br><span class="line"></span><br><span class="line">    echo &quot;replace $RES_PATH/values/strings.xml&quot;</span><br><span class="line">    rm $RES_PATH&quot;/values/strings.xml&quot;</span><br><span class="line">    cp ./res/strings.xml $RES_PATH&quot;/values/&quot;</span><br><span class="line"></span><br><span class="line">    echo &quot;replace $RES_PATH/mipmap-xhdpi/ic_launcher.png&quot;</span><br><span class="line">    rm $RES_PATH&quot;/mipmap-xhdpi/ic_launcher.png&quot;</span><br><span class="line">    cp ./res/ic_launcher.png $RES_PATH&quot;/mipmap-xhdpi/&quot;</span><br><span class="line">    rm $RES_PATH&quot;/mipmap-xxhdpi/ic_launcher.png&quot;</span><br><span class="line">    cp ./res/ic_launcher.png $RES_PATH&quot;/mipmap-xxhdpi/&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 重新打包</span><br><span class="line">generateAPK()&#123;</span><br><span class="line">    cd $ANDROID_PATH/app/</span><br><span class="line">    gradle clean assembleRelease</span><br><span class="line"></span><br><span class="line">    mkdir $PROJECT_PATH/android-build/apk</span><br><span class="line">    cp $ANDROID_PATH/app/build/outputs/apk/release/*.apk $PROJECT_PATH/android-build/apk</span><br><span class="line">    echo &quot;regenerate apk in $PROJECT_PATH/android-build/apk&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># 执行流程</span><br><span class="line">buildCompile</span><br><span class="line">handleAndroidProject</span><br><span class="line">generateAPK</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="7、推荐资料"><a href="#7、推荐资料" class="headerlink" title="7、推荐资料"></a>7、推荐资料</h1><ul>
+<li>Cocos Creator v1.8.x 用户手册<br><a href="http://docs.cocos.com/creator/manual/zh/" target="_blank" rel="noopener">http://docs.cocos.com/creator/manual/zh/</a></li>
+<li>Cocos Creator 之旅：<br><a href="http://www.cocos.com/607" target="_blank" rel="noopener">http://www.cocos.com/607</a></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2013/07/13/Cocos2d-x入门及Android原生平台发布/" data-id="cjtwz0trv0000vzpvrtv1ef6c" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/android/">android</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/android/" style="font-size: 10px;">android</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/07/">July 2013</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2016/07/29/Android分屏多窗口实现/">Android分屏多窗口实现</a>
+          </li>
+        
+          <li>
+            <a href="/2013/07/13/Cocos2d-x入门及Android原生平台发布/">Cocos2d-x</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
