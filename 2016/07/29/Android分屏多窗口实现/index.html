@@ -13,7 +13,7 @@
 <meta property="og:site_name" content="阿启阿南">
 <meta property="og:description" content="前言基于公司产品的要求，需要研究app如何在Android N中支持分屏模式。以下是自己思路的总结，也顺便帮助到各位。 概述Android N 的新特性就是对应用分屏的支持。在分屏模式中，系统以左右并排或上下并排的方式分屏显示两个应用。用户可以通过拖动两个应用之间的分界线来改变两个应用的尺寸。 用户可以通过以下方式切换到分屏模式：  打开 Overview 屏幕并长按 Activity 标题，则可">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-01-10T11:50:20.000Z">
+<meta property="og:updated_time" content="2019-03-31T16:42:55.140Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android分屏多窗口实现">
 <meta name="twitter:description" content="前言基于公司产品的要求，需要研究app如何在Android N中支持分屏模式。以下是自己思路的总结，也顺便帮助到各位。 概述Android N 的新特性就是对应用分屏的支持。在分屏模式中，系统以左右并排或上下并排的方式分屏显示两个应用。用户可以通过拖动两个应用之间的分界线来改变两个应用的尺寸。 用户可以通过以下方式切换到分屏模式：  打开 Overview 屏幕并长按 Activity 标题，则可">
@@ -100,8 +100,9 @@
 </ul>
 <p>另外，用户可以在两个 Activity 共享屏幕的同时在这两个 Activity 之间拖放数据 </p>
 <h1 id="分屏模式下的生命周期"><a href="#分屏模式下的生命周期" class="headerlink" title="分屏模式下的生命周期"></a>分屏模式下的生命周期</h1><p>首先，分屏模式并没有改变Activity的生命周期。<br>在分屏模式中，与用户交互的 Activity 为活动状态。另一个 Activity 虽然可见，但处于暂停状态。 如果用户与此暂停的 Activity 交互，该 Activity 将恢复，而之前的Activity 将暂停。所以，在分屏模式下，应用在对用户可见的状态下进入paused状态，可能仍需要继续其操作。就如一个视频播放器，如果进入了分屏模式，不应该在onPaused()中暂停视频播放，而应该在onStop()中才暂停视频，然后对应的在onStart中恢复视频播放。</p>
+<p>另外，在Android N的Activity类中，增加了一个void onMultiWindowChanged(boolean</p>
 <blockquote>
-<p>另外，在Android N的Activity类中，增加了一个void onMultiWindowChanged(boolean<br>inMultiWindow)回调，Activity 进入或退出分屏模式时系统将调用此方法。 在 Activity<br>进入分屏模式时，系统向该方法传递 true 值，在退出分屏模式时，则传递 false 值。</p>
+<p>inMultiWindow)回调，Activity 进入或退出分屏模式时系统将调用此方法。 在 Activity<br>进入分屏模式时，系统向该方法传递 true 值，在退出分屏模式时，则传递 false 值。</p>
 </blockquote>
 <p>#处理运行时变更<br>在分屏模式显示应用，调整应用大小，或将应用恢复到全屏模式时，系统将通知 Activity 发生配置变更。这与<strong>横竖屏切换</strong>时的 Activity 生命周期影响相同，即Activity会重启(调用onPause–&gt;onStop–&gt;onDestory–&gt;onCreate–&gt;onStart–&gt;onResume),<br>为了分屏后使Activity恢复原来的状态，一般有两种方法。一是在Activity重启前保存数据；二是阻止Activity的重启。</p>
 <ul>
@@ -128,7 +129,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://github.com/devnan/2016/07/29/Android分屏多窗口实现/" data-id="cjtx5d9ru00001ipvaxvhgutc" class="article-share-link">Share</a>
+      <a data-url="https://github.com/devnan/2016/07/29/Android分屏多窗口实现/" data-id="cjtyc2juo0001yxpv1fdcpgq0" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android/">android</a></li></ul>
