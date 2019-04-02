@@ -69,6 +69,63 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-内存泄漏之库工程集成LeakCanary" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/04/02/内存泄漏之库工程集成LeakCanary/" class="article-date">
+  <time datetime="2019-04-02T13:02:03.000Z" itemprop="datePublished">2019-04-02</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/02/内存泄漏之库工程集成LeakCanary/">内存泄漏之库工程集成LeakCanary</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>业务项目中采用模块化的架构，需要在每个模块集成LeakCanary，这样可以在模块的开发调试阶段发现内存泄漏问题，比较好的做法是把<br>LeakCanary放到基础的库工程中。</p>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><ol>
+<li>库工程默认只会发布release包，官网的集成依赖方式是release采用no-op空实现，所以需要对库工程做处理</li>
+<li>LeakCanary的泄漏分析是在子进程中，app依赖库工程后，需要避免application重复初始化</li>
+</ol>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><h4 id="问题1："><a href="#问题1：" class="headerlink" title="问题1："></a>问题1：</h4><p>有两种解决办法<br>1、第一种可以采用官网的依赖方式。由于releaseImplementation是空实现，而库工程默认只会发布release包，导致leakcanary失效。</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">dependencies</span> &#123;</span><br><span class="line">  debugImplementation <span class="string">'com.squareup.leakcanary:leakcanary-android:1.6.3'</span></span><br><span class="line">  releaseImplementation <span class="string">'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们需要对库工程打包多个变种，设置publishNonDefault可以生成所有变种包。这样app就可以区分不同的构建类型进行依赖。</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">apply plugin: <span class="string">'com.android.library'</span></span><br><span class="line">android &#123;</span><br><span class="line">    ...</span><br><span class="line">    </span><br><span class="line">    publishNonDefault <span class="keyword">true</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>app依赖方式如下，让app工程在debug版本下依赖库工程debug版本，在release版本下依赖库工程release版本<br><figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">dependencies</span> &#123;</span><br><span class="line">    debugImplementation  <span class="keyword">project</span>(path: <span class="string">':myLibrary'</span>, configuration: <span class="string">'debug'</span>)</span><br><span class="line">    releaseImplementation <span class="keyword">project</span>(path: <span class="string">':myLibrary'</span>, configuration: <span class="string">'release'</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>2、第二种方法，使用依赖如下：<br><figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">dependencies</span> &#123;</span><br><span class="line">  implementation <span class="string">'com.squareup.leakcanary:leakcanary-android:1.6.3'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>基础库工程抽离一个BaseApplication做初始化的公共操作。如果release版本则不初始化LeakCanary，代替了第一种方法中releaseImplementation的空实现方式。需要注意的是，库工程BuildConfig.debug一直为false，需要在app工程中判断是否调试版本。项目工程采用了这种方法。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">BaseApplication</span> : <span class="type">Application</span></span>() &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">companion</span> <span class="keyword">object</span> &#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">val</span> TAG = <span class="keyword">this</span>::<span class="class"><span class="keyword">class</span>.<span class="title">java</span>.<span class="title">simpleName</span></span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onCreate</span><span class="params">()</span></span> &#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate()</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (isDebug()) &#123;</span><br><span class="line">            <span class="keyword">if</span> (LeakCanary.isInAnalyzerProcess(<span class="keyword">this</span>)) &#123;</span><br><span class="line">                <span class="comment">// This process is dedicated to LeakCanary for heap analysis.</span></span><br><span class="line">                <span class="comment">// You should not init your app in this process.</span></span><br><span class="line">                logd(TAG, <span class="string">"LeakCanary process is starting for heap analysis"</span>)</span><br><span class="line">                <span class="keyword">return</span></span><br><span class="line">            &#125;</span><br><span class="line">            LeakCanary.refWatcher(<span class="keyword">this</span>)</span><br><span class="line">                    .listenerServiceClass(LeakService::<span class="class"><span class="keyword">class</span>.<span class="title">java</span>)</span></span><br><span class="line">                    .buildAndInstall()</span><br><span class="line">            logd(TAG, <span class="string">"LeakCanary installed"</span>)</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Normal app init code...     </span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">      <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 是否为调试版本，需要在app工程判断</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">abstract</span> <span class="function"><span class="keyword">fun</span> <span class="title">isDebug</span><span class="params">()</span></span>: <span class="built_in">Boolean</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="问题2："><a href="#问题2：" class="headerlink" title="问题2："></a>问题2：</h4><p>由于LeakCanary堆分析是另起子进程进行的，会重新触发application的onCreate。需要记得在子进程中return掉以避免重复初始化。<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">if</span> (LeakCanary.isInAnalyzerProcess(<span class="keyword">this</span>)) &#123;</span><br><span class="line">     <span class="comment">// This process is dedicated to LeakCanary for heap analysis.</span></span><br><span class="line">     <span class="comment">// You should not init your app in this process.</span></span><br><span class="line">     <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>我们想把LeakCanary的逻辑放到基础库工程，app工程不需要关心这些操作。所以设计如下，</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">BaseApplication</span> : <span class="type">Application</span></span>() &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">companion</span> <span class="keyword">object</span> &#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">val</span> TAG = <span class="keyword">this</span>::<span class="class"><span class="keyword">class</span>.<span class="title">java</span>.<span class="title">simpleName</span></span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onCreate</span><span class="params">()</span></span> &#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate()</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (isDebug()) &#123;</span><br><span class="line">            <span class="keyword">if</span> (LeakCanary.isInAnalyzerProcess(<span class="keyword">this</span>)) &#123;</span><br><span class="line">                <span class="comment">// This process is dedicated to LeakCanary for heap analysis.</span></span><br><span class="line">                <span class="comment">// You should not init your app in this process.</span></span><br><span class="line">                logd(TAG, <span class="string">"LeakCanary process is starting for heap analysis"</span>)</span><br><span class="line">                <span class="keyword">return</span></span><br><span class="line">            &#125;</span><br><span class="line">            LeakCanary.refWatcher(<span class="keyword">this</span>)</span><br><span class="line">                    .listenerServiceClass(LeakService::<span class="class"><span class="keyword">class</span>.<span class="title">java</span>)</span></span><br><span class="line">                    .buildAndInstall()</span><br><span class="line">            logd(TAG, <span class="string">"LeakCanary installed"</span>)</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//公共初始化...</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">//子类application初始化，为了避免在LeakCanary子进程中重复初始化</span></span><br><span class="line">        onAppCreate()</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 子类application初始化</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">abstract</span> <span class="function"><span class="keyword">fun</span> <span class="title">onAppCreate</span><span class="params">()</span></span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 是否为调试版本，需要在app工程判断</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">abstract</span> <span class="function"><span class="keyword">fun</span> <span class="title">isDebug</span><span class="params">()</span></span>: <span class="built_in">Boolean</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在app工程中继承BaseApplication</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Application</span> : <span class="type">BaseApplication &#123;</span></span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onAppCreate</span><span class="params">()</span></span> &#123;</span><br><span class="line">        <span class="comment">//no-op</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">isDebug</span><span class="params">()</span></span>: <span class="built_in">Boolean</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> BuildConfig.DEBUG;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>以上，是库工程集成LeakCanary的个人实现方案。有更好的设计可以留言交流。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://github.com/devnan/2019/04/02/内存泄漏之库工程集成LeakCanary/" data-id="cjtzsms2o000190pvq2w0rntc" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/内存泄漏/">内存泄漏</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-Cocos2d-x入门及Android原生平台发布" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2018/01/26/Cocos2d-x入门及Android原生平台发布/" class="article-date">
@@ -208,7 +265,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://github.com/devnan/2018/01/26/Cocos2d-x入门及Android原生平台发布/" data-id="cjtye9qsi0001hdpvp0d0wfpw" class="article-share-link">Share</a>
+      <a data-url="https://github.com/devnan/2018/01/26/Cocos2d-x入门及Android原生平台发布/" data-id="cjtzsms2i000090pvq1ky5ldd" class="article-share-link">Share</a>
       
       
     </footer>
@@ -278,7 +335,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://github.com/devnan/2016/07/29/Android分屏多窗口实现/" data-id="cjtye9qsb0000hdpv1oduajyy" class="article-share-link">Share</a>
+      <a data-url="https://github.com/devnan/2016/07/29/Android分屏多窗口实现/" data-id="cjtzsms2q000290pvhsodf22k" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android/">android</a></li></ul>
@@ -302,7 +359,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/android/">android</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/android/">android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/内存泄漏/">内存泄漏</a></li></ul>
     </div>
   </div>
 
@@ -312,7 +369,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/android/" style="font-size: 10px;">android</a>
+      <a href="/tags/android/" style="font-size: 10px;">android</a> <a href="/tags/内存泄漏/" style="font-size: 10px;">内存泄漏</a>
     </div>
   </div>
 
@@ -321,7 +378,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li></ul>
     </div>
   </div>
 
@@ -332,6 +389,10 @@
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2019/04/02/内存泄漏之库工程集成LeakCanary/">内存泄漏之库工程集成LeakCanary</a>
+          </li>
         
           <li>
             <a href="/2018/01/26/Cocos2d-x入门及Android原生平台发布/">Cocos2d-x入门及Android原生平台发布</a>
