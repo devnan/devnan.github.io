@@ -1,22 +1,22 @@
 ---
 
 title: 内存泄漏之库工程集成LeakCanary
-date: 2019-04-02 21:02:03
+date: 2019-04-02 21:01:03
 tags: 内存泄漏
 
 ---
 
 
-业务项目中采用模块化的架构，需要在每个模块集成LeakCanary，这样可以在模块的开发调试阶段发现内存泄漏问题，比较好的做法是把 
-LeakCanary放到基础的库工程中。
+业务项目中采用模块化的架构，需要在每个模块集成LeakCanary，这样可以在模块的开发调试阶段发现内存泄漏问题，比较好的做法是把LeakCanary下沉到基础的库工程中。
 
 ## 问题
 
-1. 库工程默认只会发布release包，官网的集成依赖方式是release采用no-op空实现，所以需要对库工程做处理
-2. LeakCanary的泄漏分析是在子进程中，app依赖库工程后，需要避免application重复初始化
+~~1. 库工程默认只会发布release包，官网的集成依赖方式是release采用no-op空实现，所以需要对库工程做处理~~
+注：gradle插件3.0之后可以发布所有变种包，不存在问题1。网上很多资料会误导，可以参考 https://developer.android.com/studio/build/gradle-plugin-3-0-0-migration.html
 
+2. LeakCanary的泄漏分析是在子进程中，app依赖库工程后，需要避免application重复初始化
 ## 解决方案
-#### 问题1：
+#### 问题1：(gradle插件3.0之前)
 有两种解决办法
 1、第一种可以采用官网的依赖方式。由于releaseImplementation是空实现，而库工程默认只会发布release包，导致leakcanary失效。
 
@@ -161,4 +161,4 @@ class Application : BaseApplication {
 
 ```
 
-以上，是库工程集成LeakCanary的个人实现方案。有更好的设计可以留言交流。
+以上，是库工程集成LeakCanary的一种实现方案，有更好的设计可以留言交流。
