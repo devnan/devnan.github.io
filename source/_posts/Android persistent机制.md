@@ -1,7 +1,11 @@
 ---
 title: Android persistent机制
-date: 2019/3/6 21:26:11
+date: '2019/3/6 21:26:11'
+abbrlink: 8417e24a
 ---
+
+![](https://cdn.jsdelivr.net/gh/devnan/pic/blog/20200126213606.jpg)
+<!-- more -->
 
 本文简单分析persistent属性的相关源码流程，总结persistent的作用及注意事项。
 

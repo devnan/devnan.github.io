@@ -1,9 +1,8 @@
 ---
-
 title: Android分屏多窗口实现
-date: 2016-07-29 09:56:32    
-tags: android 
-
+tags: android
+abbrlink: 11a8ecdc
+date: 2016-07-29 09:56:32
 ---
 
 # 前言

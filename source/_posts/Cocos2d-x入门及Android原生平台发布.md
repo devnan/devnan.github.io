@@ -1,7 +1,11 @@
 ---
 title: Cocos2d-x入门及Android原生平台发布
-date: 2018/1/26 20:46:25
+date: '2018/1/26 20:46:25'
+abbrlink: '9e519237'
 ---
+
+![](https://cdn.jsdelivr.net/gh/devnan/pic/blog/20200126225352.jpg)
+<!-- more -->
 
 # 0、前言
 本文简单介绍了Cocos2d-x的基本概念以及Cocos Creator开发环境搭建和入门，最后是Android平台的发布和打包。
