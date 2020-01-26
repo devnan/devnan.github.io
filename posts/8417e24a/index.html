@@ -94,21 +94,19 @@
 
 
 
-  <meta name="description" content="本文简单分析persistent属性的相关源码流程，总结persistent的作用及注意事项。 前言在一次调试系统应用过程中，修改部分代码逻辑后，执行adb install -r 并启动，发现应用界面更新了，但是修改到的逻辑并没有变，还是之前的版本逻辑。分别执行了pm clear和am force-stop再起来应用，发现这两种做法进程id都没有变。于是直接kill掉对应进程id，发现进程id变了">
-<meta property="og:type" content="article">
+  <meta property="og:type" content="article">
 <meta property="og:title" content="Android persistent机制">
 <meta property="og:url" content="https://github.com/devnan/posts/8417e24a/index.html">
 <meta property="og:site_name" content="阿启阿南">
-<meta property="og:description" content="本文简单分析persistent属性的相关源码流程，总结persistent的作用及注意事项。 前言在一次调试系统应用过程中，修改部分代码逻辑后，执行adb install -r 并启动，发现应用界面更新了，但是修改到的逻辑并没有变，还是之前的版本逻辑。分别执行了pm clear和am force-stop再起来应用，发现这两种做法进程id都没有变。于是直接kill掉对应进程id，发现进程id变了">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/devnan/pic/blog/20200126213606.jpg">
 <meta property="og:image" content="https://raw.githubusercontent.com/devnan/pic/master/20190507223758.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/devnan/pic/master/20190507224132.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/devnan/pic/master/20190507224146.png">
-<meta property="og:updated_time" content="2020-01-26T09:59:31.005Z">
+<meta property="og:updated_time" content="2020-01-26T13:36:30.964Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android persistent机制">
-<meta name="twitter:description" content="本文简单分析persistent属性的相关源码流程，总结persistent的作用及注意事项。 前言在一次调试系统应用过程中，修改部分代码逻辑后，执行adb install -r 并启动，发现应用界面更新了，但是修改到的逻辑并没有变，还是之前的版本逻辑。分别执行了pm clear和am force-stop再起来应用，发现这两种做法进程id都没有变。于是直接kill掉对应进程id，发现进程id变了">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/devnan/pic/master/20190507223758.png">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/devnan/pic/blog/20200126213606.jpg">
 
 
 
@@ -452,7 +450,8 @@
       
 
       
-        <p>本文简单分析persistent属性的相关源码流程，总结persistent的作用及注意事项。</p>
+        <p><img src="https://cdn.jsdelivr.net/gh/devnan/pic/blog/20200126213606.jpg" alt><br><a id="more"></a></p>
+<p>本文简单分析persistent属性的相关源码流程，总结persistent的作用及注意事项。</p>
 <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在一次调试系统应用过程中，修改部分代码逻辑后，执行<code>adb install -r</code> 并启动，发现应用界面更新了，但是修改到的逻辑并没有变，还是之前的版本逻辑。<br>分别执行了pm clear和am force-stop再起来应用，发现这两种做法进程id都没有变。<br>于是直接kill掉对应进程id，发现进程id变了，进程重启了，但是发现修改到的逻辑还是没变…<br>最后重启了一下机器？应用的界面和逻辑都正常更新了。</p>
 <p>为什么呢？可以看一下此系统应用的manifest</p>
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">manifest</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">xmlns:tools</span>=<span class="string">"http://schemas.android.com/tools"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">package</span>=<span class="string">"com.seewo.trunning"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:sharedUserId</span>=<span class="string">"android.uid.system"</span>&gt;</span></span><br><span class="line">    </span><br><span class="line">    ...</span><br><span class="line">    </span><br><span class="line">    <span class="tag">&lt;<span class="name">application</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:name</span>=<span class="string">".TRunningApplication"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:label</span>=<span class="string">"@string/app_name"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:persistent</span>=<span class="string">"true"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:supportsRtl</span>=<span class="string">"true"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:theme</span>=<span class="string">"@style/AppTheme"</span>&gt;</span></span><br><span class="line">    ...</span><br><span class="line">    <span class="tag">&lt;/<span class="name">application</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">manifest</span>&gt;</span></span><br></pre></td></tr></table></figure>
