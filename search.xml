@@ -2,7 +2,7 @@
 <search>
   <entry>
     <title>2019年总结</title>
-    <url>/posts/undefined/</url>
+    <url>/posts/b15a3c33/</url>
     <content><![CDATA[<p><img src="https://cdn.jsdelivr.net/gh/devnan/pic/blog/20200126211450.jpg" alt></p>
 <a id="more"></a>
 <h3 id="新环境与思考"><a href="#新环境与思考" class="headerlink" title="新环境与思考"></a>新环境与思考</h3><p>过来新环境一个多月了，工作上还算充实。有输入有输出，整体感觉很棒，也还需要继续加油。年底的时候换环境，看起来是比较吃亏的，所以之前是下了一个比较大的决心，就为了快速渡过自己的瓶颈期。我自己的理解是，技术人所谓的瓶颈期并不是技术本身的瓶颈，而是外部环境带给人的认知上的瓶颈。一个技术人在某一个狭小的环境待久了，很可能以为这是技术的全部；在一个地方拧螺丝很熟练，很容易散失对技术的好奇心，没有了之前那股冲劲。所以工作前几年，我还是想尽量扩大自己的技术视野，当业务的发展已经满足不了自身的成长，我知道是时候要换环境了。</p>
@@ -81,7 +81,8 @@
   <entry>
     <title>Cocos2d-x入门及Android原生平台发布</title>
     <url>/posts/9e519237/</url>
-    <content><![CDATA[<h1 id="0、前言"><a href="#0、前言" class="headerlink" title="0、前言"></a>0、前言</h1><p>本文简单介绍了Cocos2d-x的基本概念以及Cocos Creator开发环境搭建和入门，最后是Android平台的发布和打包。</p>
+    <content><![CDATA[<p><img src="https://cdn.jsdelivr.net/gh/devnan/pic/blog/20200126225352.jpg" alt><br><a id="more"></a></p>
+<h1 id="0、前言"><a href="#0、前言" class="headerlink" title="0、前言"></a>0、前言</h1><p>本文简单介绍了Cocos2d-x的基本概念以及Cocos Creator开发环境搭建和入门，最后是Android平台的发布和打包。</p>
 <h1 id="1、Cocos2d-x-是什么"><a href="#1、Cocos2d-x-是什么" class="headerlink" title="1、Cocos2d-x 是什么"></a>1、Cocos2d-x 是什么</h1><p>Cocos2d-x 是一款开源的跨平台游戏引擎，支持C++，Lua和JavaScript语言；Cocos2d 有很多个分支，蓝色区域是目前的主流解决方案。<br><img src="![](https://raw.githubusercontent.com/devnan/pic/master/CocosFamily-20190331225612.png" alt></p>
 <hr>
 <h2 id="1-1、Cocos2d与Unity3d"><a href="#1-1、Cocos2d与Unity3d" class="headerlink" title="1-1、Cocos2d与Unity3d"></a>1-1、Cocos2d与Unity3d</h2><p>Unity3d：</p>
