@@ -2,7 +2,7 @@
 <search>
   <entry>
     <title>说说Android分区存储</title>
-    <url>/posts/undefined/</url>
+    <url>/posts/b1cb81e6/</url>
     <content><![CDATA[<p><img src="https://cdn.jsdelivr.net/gh/devnan/pic/blog/20200223155102.jpg" alt><br><a id="more"></a></p>
 <p>前几天，Android11预览版出来了。和Android10一样，继续加强权限限制和隐私保护，我们也都看到了scoped storage(本文称为分区存储)这块的变化，即Android11将强制执行分区存储。详见<a href="https://developer.android.com/preview/privacy" target="_blank" rel="noopener">https://developer.android.com/preview/privacy</a></p>
 <p><img src="https://cdn.jsdelivr.net/gh/devnan/pic/blog/20200222213902.png" alt></p>
