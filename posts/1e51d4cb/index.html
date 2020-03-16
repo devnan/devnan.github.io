@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html class="theme-next mist" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/avatar.jpg?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.jpg?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.jpg?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"always","offset":12,"onmobile":true,"dimmer":true},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="keywords" content="ndk">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android NDK(一) 理解JNI技术">
+<meta property="og:url" content="https://github.com/devnan/posts/1e51d4cb/index.html">
+<meta property="og:site_name" content="阿启阿南">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/devnan/pic/blog/20200316082321.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/devnan/pic/blog/20200315121813.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/devnan/pic/blog/20200315111805.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/devnan/pic/blog/20200315143537.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/devnan/pic/blog/20200315143655.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/devnan/pic/blog/20200315154227.png">
+<meta property="og:updated_time" content="2020-03-16T00:26:32.187Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android NDK(一) 理解JNI技术">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/devnan/pic/blog/20200316082321.jpg">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="阿启阿南" type="application/atom+xml">
+
+
+
+  
+  
+  <link rel="canonical" href="https://github.com/devnan/posts/1e51d4cb/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Android NDK(一) 理解JNI技术 | 阿启阿南</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">阿启阿南</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">不忘初心</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>Search</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="Searching..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+  
+  
+
+  
+
+  <a href="https://github.com/devnan" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://github.com/devnan/posts/1e51d4cb/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Devnan">
+      <meta itemprop="description" content="Devnan">
+      <meta itemprop="image" content="https://raw.githubusercontent.com/devnan/pic/master/20190402213116.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="阿启阿南">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android NDK(一) 理解JNI技术
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2020-03-16 08:24:20" itemprop="dateCreated datePublished" datetime="2020-03-16T08:24:20+08:00">2020-03-16</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+            
+              
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <span class="post-meta-item-text">Comments: </span>
+                <a href="/posts/1e51d4cb/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/posts/1e51d4cb/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+            <span id="/posts/1e51d4cb/" class="leancloud_visitors" data-flag-title="Android NDK(一) 理解JNI技术">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Views: </span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><img src="https://cdn.jsdelivr.net/gh/devnan/pic/blog/20200316082321.jpg" alt><br><a id="more"></a></p>
+<p>开始之前，可以先提几个问题</p>
+<ol>
+<li>JNI的本质是什么，java和native如何实现互操作？</li>
+<li>JNI静态注册与动态注册可以混用吗？</li>
+</ol>
+<p>首先是理论部分，先弄清楚NDK与JNI的概念。</p>
+<h1 id="NDK与JNI"><a href="#NDK与JNI" class="headerlink" title="NDK与JNI"></a>NDK与JNI</h1><p>NDK全称为Native Development Kit，是一套允许使用 C 和 C++ 等语言，以原生代码实现应用的工具集，包括但不限于编译工具、公共库等。</p>
+<p>在Android NDK开发中，应用层就是借助JNI以实现对本地代码的调用。<br>不只是应用层，JNI技术也广泛应用在Framework层中，主要源码在 <code>framework/base/</code>目录下</p>
+<p>下图简单地从另一个角度看Android的系统架构，其中，JNI接口的实现在Android虚拟机，宿主环境包括Linux kernel。<br><img src="https://cdn.jsdelivr.net/gh/devnan/pic/blog/20200315121813.png" alt></p>
+<h1 id="JNI技术"><a href="#JNI技术" class="headerlink" title="JNI技术"></a>JNI技术</h1><h3 id="JNI是什么"><a href="#JNI是什么" class="headerlink" title="JNI是什么"></a>JNI是什么</h3><p>JNI，全称Java Native Interface，是一种编程框架，使得Java虚拟机中的Java程序与本地应用/或库可以相互调用。本地程序一般是用其它语言（C、C++或汇编语言等）编写的，并且被编译为基于本机硬件和操作系统的程序。为了通俗地介绍JNI的作用，摘抄网上的一个比喻，就是中国讲普通话，日本讲日语，我们无法交流，如果此时我们都学会了英语，就可以用英语交流了。JNI就是java和本地语言之间交互的媒介。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/devnan/pic/blog/20200315111805.png" alt></p>
+<p>上图，我们可以看到JNI接口的具体实现是在虚拟机。历史上存在过不同本地方法接口的实现，使得开发者不得不编写和维护多种不同的版本。JNI的目标就是提供一套统一的，考虑充分的标准接口，使得开发者可以只写一个版本的本地代码，在不同的Java虚拟机上运行，也就是实现虚拟机无关性。</p>
+<h3 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h3><ol>
+<li>实现Java库无法提供的基于平台系统相关特性的功能</li>
+<li>直接复用现有的本地开源库</li>
+<li>使用C/C++开发对时间和性能要求很高的逻辑，如音视频，图片处理，游戏逻辑等</li>
+<li>保护关键代码，增大反编译难度</li>
+<li>…</li>
+</ol>
+<h3 id="优势与劣势"><a href="#优势与劣势" class="headerlink" title="优势与劣势"></a>优势与劣势</h3><p>如上的应用场景就是使用JNI的优势，当然，任何技术都会在解决一个问题的同时带来其他新的问题，使用JNI也会有劣势：</p>
+<ol>
+<li>使用JNI编程时，容易操作不当会引起崩溃。相比Java崩溃，Native崩溃难以捕获与定位</li>
+<li>可能引起内存泄漏等</li>
+<li>JNI上下文环境切换开销</li>
+</ol>
+<h3 id="其他方案对比"><a href="#其他方案对比" class="headerlink" title="其他方案对比"></a>其他方案对比</h3><p>有些替代方案可以允许Java与其他语言编写的代码进行互操作，例如：</p>
+<ol>
+<li>Java应用程序可以通过TCP/IP连接或者其他IPC通信机制与本地应用进行通信</li>
+<li>可以利用分布式对象技术，如Java IDL API<br>…</li>
+</ol>
+<p>但是，以上方案的共性是将Java应用程序和原生代码隔离在不同的进程空间中。而JNI技术是在相同的进程空间。使用其他替代方案的问题在于，进程间操作麻烦且低效，复制和传输数据会增加额外开销。</p>
+<p>通过上文对JNI技术有了比较清晰的认识之后，我们再看看实战部分。</p>
+<h1 id="NDK-JNI开发流程"><a href="#NDK-JNI开发流程" class="headerlink" title="NDK/JNI开发流程"></a>NDK/JNI开发流程</h1><p>在Android Studio中，我们可以直接新建一个Native C++工程，用kotlin实现一个最简单的JNI调用。</p>
+<ol>
+<li>Java层声明Native方法<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.devnan.ndk</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> : <span class="type">AppCompatActivity</span></span>() &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">external</span> <span class="function"><span class="keyword">fun</span> <span class="title">stringFromJNI</span><span class="params">()</span></span>: String</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<ol start="2">
+<li><p>JNI层实现Java层声明的方法, 可以调用底层库或者回调Java层方法</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//native-lib.cpp</span></span><br><span class="line"><span class="keyword">extern</span> <span class="string">"C"</span> JNIEXPORT jstring JNICALL</span><br><span class="line">Java_com_devnan_ndk_MainActivity_stringFromJNI(</span><br><span class="line">        JNIEnv* env,</span><br><span class="line">        jobject <span class="comment">/* this */</span>) &#123;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> hello = <span class="string">"Hello from C++"</span>;</span><br><span class="line">    <span class="keyword">return</span> env-&gt;NewStringUTF(hello.c_str());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Java层加载编译后生成的动态库</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// MainActivity</span></span><br><span class="line"><span class="keyword">companion</span> <span class="keyword">object</span> &#123;</span><br><span class="line">    <span class="keyword">init</span> &#123;</span><br><span class="line">        System.loadLibrary(<span class="string">"native-lib"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>定义cmake脚本，编译C/C++源码生成动态库so文件</p>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cmake_minimum_required(VERSION 3.4.1)</span><br><span class="line">add_library(native-lib SHARED native-lib.cpp)</span><br></pre></td></tr></table></figure>
+<p>虽然IDE帮我们做了大部分事情，但是还是要明白整个过程的本质。<br>Android NDK开发中，在编译阶段，cmake会根据CMakeLists定义的规则，借助NDK工具包的交叉编译链将C/C++代码编译生成动态库so文件(当然也可以是静态库)，最后gradle会通过package task将so一起打包到APK中，这是IDE以及gradle帮我们做的。另外，在安装阶段，Android系统安装apk时会通过PackageManagerService 将apk lib 目录下的 so 文件会被解压到对应apk目录，一般在 /data/app/package-name-xxx/lib 目录；<br>在运行阶段，调用 System.loadLibrary会首先在对应apk目录下查找so，找不到才在系统目录下查找。这里涉及到so的拷贝和加载策略，详细分析会放到后续文章。</p>
+<h1 id="JNI数据类型"><a href="#JNI数据类型" class="headerlink" title="JNI数据类型"></a>JNI数据类型</h1><p>由于Java语言与C/C++语言数据类型的不匹配，需要单独定义一系列的数据类型转换关系来完成两者之间的映射。</p>
+<p>基本数据类型：<br><img src="https://cdn.jsdelivr.net/gh/devnan/pic/blog/20200315143537.png" alt><br>在NDK包的jni.h文件可以看到定义</p>
+<figure class="highlight h"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//$NDK/sysroot/usr/include/jni.h</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Primitive types that match up with Java equivalents. */</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">uint8_t</span>  jboolean; <span class="comment">/* unsigned 8 bits */</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">int8_t</span>   jbyte;    <span class="comment">/* signed 8 bits */</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">uint16_t</span> jchar;    <span class="comment">/* unsigned 16 bits */</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">int16_t</span>  jshort;   <span class="comment">/* signed 16 bits */</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">int32_t</span>  jint;     <span class="comment">/* signed 32 bits */</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">int64_t</span>  jlong;    <span class="comment">/* signed 64 bits */</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">float</span>    jfloat;   <span class="comment">/* 32-bit IEEE 754 */</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">double</span>   jdouble;  <span class="comment">/* 64-bit IEEE 754 */</span></span><br></pre></td></tr></table></figure>
+<p>引用数据类型，详细可以查看jni.h<br><img src="https://cdn.jsdelivr.net/gh/devnan/pic/blog/20200315143655.png" alt></p>
+<h1 id="JNI签名规则"><a href="#JNI签名规则" class="headerlink" title="JNI签名规则"></a>JNI签名规则</h1><p>由于Java支持方法重载，在JNI访问Java层方法时仅靠函数名无法唯一确定一个方法，因此JNI提供了一套签名规则，以使用一个字符串来唯一确定一个方法。其规则：(参数1类型签名参数2类型签名…)返回值类型签名，比如:<br>native方法: <code>external fun stringFromJNI(bool:Boolean, str: String): String</code><br>类型签名: <code>(ZLjava/lang/String;)Ljava/lang/String;</code><br>建议对class文件使用<code>javap -s -p</code>拿到签名信息，毕竟手写容易出错。<br><img src="https://cdn.jsdelivr.net/gh/devnan/pic/blog/20200315154227.png" alt></p>
+<h1 id="JavaVM与JNIEnv"><a href="#JavaVM与JNIEnv" class="headerlink" title="JavaVM与JNIEnv"></a>JavaVM与JNIEnv</h1><p>JNI技术中，native层怎么调用到java层呢？就是利用JavaVM 和 JNIEnv 这两个结构体。可以说，他们就是native通往java世界大门的钥匙。<br>JavaVM是进程虚拟机环境，每个进程有且只有一个JavaVM实例。在Android应用进程启动时，Android虚拟机在AndroidRuntime.cpp的start()方法完成JavaVM的创建。<br>JNIEnv是线程上下文环境，每个线程有且只有一个JNIEnv实例，可以看到每个JNI方法的第一个参数就是JNIEnv。<br>同样，来看一下JavaVM在jni.h的定义</p>
+<figure class="highlight h"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">if</span> defined(__cplusplus)</span></span><br><span class="line"><span class="keyword">typedef</span> _JNIEnv JNIEnv;</span><br><span class="line"><span class="keyword">typedef</span> _JavaVM JavaVM;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span></span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">JNINativeInterface</span>* <span class="title">JNIEnv</span>;</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">JNIInvokeInterface</span>* <span class="title">JavaVM</span>;</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+<figure class="highlight h"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> _<span class="title">JavaVM</span> &#123;</span></span><br><span class="line">    <span class="keyword">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">JNIInvokeInterface</span>* <span class="title">functions</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> defined(__cplusplus)</span></span><br><span class="line">    <span class="function">jint <span class="title">DestroyJavaVM</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123; <span class="keyword">return</span> functions-&gt;DestroyJavaVM(<span class="keyword">this</span>); &#125;</span><br><span class="line">    <span class="function">jint <span class="title">AttachCurrentThread</span><span class="params">(JNIEnv** p_env, <span class="keyword">void</span>* thr_args)</span></span></span><br><span class="line"><span class="function">    </span>&#123; <span class="keyword">return</span> functions-&gt;AttachCurrentThread(<span class="keyword">this</span>, p_env, thr_args); &#125;</span><br><span class="line">    <span class="function">jint <span class="title">DetachCurrentThread</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123; <span class="keyword">return</span> functions-&gt;DetachCurrentThread(<span class="keyword">this</span>); &#125;</span><br><span class="line">    <span class="function">jint <span class="title">GetEnv</span><span class="params">(<span class="keyword">void</span>** env, jint version)</span></span></span><br><span class="line"><span class="function">    </span>&#123; <span class="keyword">return</span> functions-&gt;GetEnv(<span class="keyword">this</span>, env, version); &#125;</span><br><span class="line">    <span class="function">jint <span class="title">AttachCurrentThreadAsDaemon</span><span class="params">(JNIEnv** p_env, <span class="keyword">void</span>* thr_args)</span></span></span><br><span class="line"><span class="function">    </span>&#123; <span class="keyword">return</span> functions-&gt;AttachCurrentThreadAsDaemon(<span class="keyword">this</span>, p_env, thr_args); &#125;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span> <span class="comment">/*__cplusplus*/</span></span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>以上可以看到，JavaVM的所有操作都是由结构体 JNIInvokeInterface 实现的。<br><figure class="highlight h"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">JNIInvokeInterface</span> &#123;</span></span><br><span class="line">    <span class="keyword">void</span>*       reserved0;</span><br><span class="line">    <span class="keyword">void</span>*       reserved1;</span><br><span class="line">    <span class="keyword">void</span>*       reserved2;</span><br><span class="line"></span><br><span class="line">    jint        (*DestroyJavaVM)(JavaVM*);</span><br><span class="line">    jint        (*AttachCurrentThread)(JavaVM*, JNIEnv**, <span class="keyword">void</span>*);</span><br><span class="line">    jint        (*DetachCurrentThread)(JavaVM*);</span><br><span class="line">    jint        (*GetEnv)(JavaVM*, <span class="keyword">void</span>**, jint);</span><br><span class="line">    jint        (*AttachCurrentThreadAsDaemon)(JavaVM*, JNIEnv**, <span class="keyword">void</span>*);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>前三个指针作为保留使用，后面为函数指针。根据函数名可以推测大概的用法，其中，AttachCurrentThread 函数可以把当前线程附着到虚拟机，getEnv 函数用来获取 JNIEnv 指针。JavaVM的开发使用场景是，若无法获取到线程的JNIEnv，比如C/C++函数回调到Java层，可以全局保存JavaVM，通过AttachCurrentThread将当前线程附着到 JavaVM 以拿到 JNIEnv，最后记得调用 DetachCurrentThread 函数，否则会发生内存泄露。</p>
+<p>同理，也可以定位到JNIEnv最后由结构体JNIInvokeInterface实现。<br><figure class="highlight h"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">JNINativeInterface</span> &#123;</span></span><br><span class="line">    ...</span><br><span class="line">    jint        (*GetVersion)(JNIEnv *);</span><br><span class="line">    jclass      (*DefineClass)(JNIEnv*, <span class="keyword">const</span> <span class="keyword">char</span>*, jobject, <span class="keyword">const</span> jbyte*,</span><br><span class="line">                        jsize);</span><br><span class="line">    jclass      (*FindClass)(JNIEnv*, <span class="keyword">const</span> <span class="keyword">char</span>*);</span><br><span class="line">    </span><br><span class="line">    ...</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>可以看到，JNINativeInterface包含了JNI编程中经常用到的JNI函数，可以说JNIEnv就是我们操作 Java 层的入口。篇幅有限，由于JNIEnv相关函数过多，不在此处详细描述。如果对Android ART虚拟机中JNI接口的实现感兴趣，可以看看 <code>platform/art/runtime/jni</code> 目录，JNIEnv函数实现应该在<code>jni_internal.cc</code> 文件。</p>
+<h1 id="JNI静态注册与动态注册"><a href="#JNI静态注册与动态注册" class="headerlink" title="JNI静态注册与动态注册"></a>JNI静态注册与动态注册</h1><p>JNI技术中，java层怎么找到native方法呢？就是利用了JNI静态注册或动态注册。<br>顾名思义，静态注册，是根据函数名来建立Java方法和JNI方法间的对应关系。<br>上文例子中，Java层 <code>com.devnan.ndk.MainActivity</code>的native方法 stringFromJNI ，对应的JNI方法是<code>JNIEXPORT jstring JNICALL Java_com_devnan_ndk_MainActivity_stringFromJNI</code>，即JNI规则是Java_包名_类名_方法名。Android应用层一般采用这种方式进行静态注册。<br>其中，JNIEXPORT和JNICALL是两个宏定义。default表示外部可见，类似public，JNICALL在Linux平台只是一个空定义。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#define JNIEXPORT  __attribute__ ((visibility (&quot;default&quot;)))</span><br><span class="line">#define JNICALL</span><br></pre></td></tr></table></figure></p>
+<p>而动态注册原理是，在 Java 层调用 <code>System.loadLibrary</code> 时，底层最后会调用 <code>JNI_OnLoad ()</code> 函数。在这个函数中通过JNIEnv 提供的 <code>RegisterNatives()</code> 方法，我们可以传递 JNINativeMethod 数组主动建立native方法和JNI方法的映射关系。<br>JNINativeMethod在jni.h的定义如下：<br>typedef struct {<br>    const char<em> name;  //native方法的方法名<br>    const char</em> signature; //native方法的签名<br>    void*       fnPtr; //JNI层对应实现的方法指针<br>} JNINativeMethod;</p>
+<p>对应上文例子就是<br><figure class="highlight h"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//native-lib.h</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">char</span> *className = <span class="string">"com/devnan/ndk/MainActivity"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> JNINativeMethod gMethods[] = &#123;</span><br><span class="line">        <span class="comment">/* name, signature, funcPtr */</span></span><br><span class="line">        &#123;<span class="string">"stringFromJNI"</span>, <span class="string">"()Ljava/lang/String;"</span>, (<span class="keyword">void</span> *) stringFromJNI&#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//native-lib.cpp</span></span><br><span class="line"></span><br><span class="line">```C++</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * JNI方法随意起名为"stringFromJNI"</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function">JNIEXPORT jstring JNICALL <span class="title">stringFromJNI</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">        JNIEnv *env,</span></span></span><br><span class="line"><span class="function"><span class="params">        jobject <span class="comment">/* this */</span>)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> hello = <span class="string">"Hello JNI!"</span>;</span><br><span class="line">    <span class="keyword">return</span> env-&gt;NewStringUTF(hello.c_str());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * System.loadLibrary()最后会调用到JNI_OnLoad</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function">JNIEXPORT jint JNICALL <span class="title">JNI_OnLoad</span><span class="params">(JavaVM *vm, <span class="keyword">void</span> *reserved)</span> </span>&#123;</span><br><span class="line">    JNIEnv *env = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">if</span> (vm-&gt;GetEnv((<span class="keyword">void</span> **) &amp;env, JNI_VERSION_1_6) != JNI_OK) &#123;</span><br><span class="line">        <span class="keyword">return</span> JNI_ERR;</span><br><span class="line">    &#125;</span><br><span class="line">    assert(env != <span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">if</span> (!registerNatives(env)) &#123;</span><br><span class="line">        <span class="keyword">return</span> JNI_ERR;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> JNI_VERSION_1_6;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 调用JNIEnv函数RegisterNatives进行注册</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * jint RegisterNatives(jclass clazz, const JNINativeMethod* methods, jint nMethods)</span></span><br><span class="line"><span class="comment"> * clazz: java类名，通过FindClass得到</span></span><br><span class="line"><span class="comment"> * methods: JNINativeMethod结构体指针</span></span><br><span class="line"><span class="comment"> * nMethods: 方法个数</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">registerNatives</span><span class="params">(JNIEnv *env)</span> </span>&#123;</span><br><span class="line">    jclass clazz;</span><br><span class="line">    clazz = env-&gt;FindClass(className);</span><br><span class="line">    <span class="keyword">if</span> (clazz == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> JNI_FALSE;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (env-&gt;RegisterNatives(clazz, gMethods, NELEM(gMethods)) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> JNI_FALSE;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> JNI_TRUE;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到，JNI动态注册比静态注册要麻烦，但是，动态注册效率更快。Android Framework层几乎都是动态注册，Android系统在启动时会执行一些系统函数的JNI注册，从而把映射关系注册到了虚拟机中。init进程启动zygote进程后, 在AndroidRuntime中会先启动虚拟机，然后开始注册JNI方法。简要流程如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">//frameworks/base/cmds/app_process/app_main.cpp</span><br><span class="line"></span><br><span class="line">- zygote进程启动(App_main.cpp执行main函数)</span><br><span class="line">    - AndroidRuntime.start</span><br><span class="line">        - startVm //启动虚拟机</span><br><span class="line">        - startReg //注册JNI函数</span><br><span class="line">            - register_jni_procs //遍历RegJNI数组进行注册</span><br></pre></td></tr></table></figure></p>
+<p>小结：<br>对比动态注册，静态注册的优点是使用简单明了，但是缺点是首次调用时需要Java虚拟机搜索JNI方法以建立映射关系，第一次的运行效率低。另外，静态注册和动态注册可以混用，也就是一部分native方法用静态注册，另一部分用动态注册。思考一下，如果一个native方法同时做了静态注册和动态注册会发生什么情况？那么最后调用的是动态注册的JNI方法的实现，因为 <code>System.loadLibrary(&quot;native-lib&quot;)</code>是一般放在static代码块，也就是在类初始化阶段中，通过动态注册已经在虚拟机保存了JNI的映射关系（kotlin的写法本质也一样），而静态注册是第一次调用native方法时才建立这种映射。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>本文主要介绍了JNI技术的背景、应用场景和优缺点等，并结合 Android 介绍了JNI的开发流程，JNI数据类型和签名规则，JavaVM与JNIEnv的概念，以及JNI静态注册和动态注册的用法和区别。代码已放到 <a href="https://github.com/devnan/ndk-practices">https://github.com/devnan/ndk-practices</a></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Devnan</li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    
+    <a href="https://github.com/devnan/posts/1e51d4cb/" title="Android NDK(一) 理解JNI技术">https://github.com/devnan/posts/1e51d4cb/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/ndk/" rel="tag"># ndk</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/posts/82b9ce3/" rel="next" title="关于Gradle增量编译的坑">
+                <i class="fa fa-chevron-left"></i> 关于Gradle增量编译的坑
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMzk1NC8xMDQ4OQ=="></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://raw.githubusercontent.com/devnan/pic/master/20190402213116.jpg" alt="Devnan">
+            
+              <p class="site-author-name" itemprop="name">Devnan</p>
+              <div class="site-description motion-element" itemprop="description">Devnan</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">8</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-name">tags</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/devnan" title="GitHub &rarr; https://github.com/devnan"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:devqinan@gmail.com" title="E-Mail &rarr; mailto:devqinan@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            </div>
+          
+
+          
+             <div class="cc-license motion-element" itemprop="license">
+              
+              
+                
+              
+              
+              
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+             </div>
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#NDK与JNI"><span class="nav-number">1.</span> <span class="nav-text">NDK与JNI</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JNI技术"><span class="nav-number">2.</span> <span class="nav-text">JNI技术</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#JNI是什么"><span class="nav-number">2.0.1.</span> <span class="nav-text">JNI是什么</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#应用场景"><span class="nav-number">2.0.2.</span> <span class="nav-text">应用场景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#优势与劣势"><span class="nav-number">2.0.3.</span> <span class="nav-text">优势与劣势</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他方案对比"><span class="nav-number">2.0.4.</span> <span class="nav-text">其他方案对比</span></a></li></ol></li></ol><li class="nav-item nav-level-1"><a class="nav-link" href="#NDK-JNI开发流程"><span class="nav-number">3.</span> <span class="nav-text">NDK/JNI开发流程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JNI数据类型"><span class="nav-number">4.</span> <span class="nav-text">JNI数据类型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JNI签名规则"><span class="nav-number">5.</span> <span class="nav-text">JNI签名规则</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JavaVM与JNIEnv"><span class="nav-number">6.</span> <span class="nav-text">JavaVM与JNIEnv</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JNI静态注册与动态注册"><span class="nav-number">7.</span> <span class="nav-text">JNI静态注册与动态注册</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">8.</span> <span class="nav-text">总结</span></a></li></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+    <div id="sidebar-dimmer"></div>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Devnan</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.1.2</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+  
+
+<script src="//cdn1.lncld.net/static/js/3.11.1/av-min.js"></script>
+
+
+
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#comments',
+    verify: true,
+    notify: true,
+    appId: 'YdtugtLuwDr5uYcPPc4MsuuT-gzGzoHsz',
+    appKey: 'yLAT5sG04A7wk2B8cTO4CuIu',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true,
+    lang: 'zh-cn' || 'zh-cn'
+  });
+</script>
+
+
+
+
+  
+    <script>
+  window.livereOptions = {
+    refer: 'posts/1e51d4cb/'
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
+
+  
+
+
+  
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
